@@ -1,0 +1,10 @@
+<Root>
+  <Categories>
+    <Category name="petrol"/>
+    <Category name="groceries"/>
+  </Categories>
+  
+  <Entries>
+    <Entry date="" category="" amount="" description=""/>
+  </Entries>
+</Root>
