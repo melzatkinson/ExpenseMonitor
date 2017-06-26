@@ -279,7 +279,7 @@ namespace ExpenseMonitor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(679, 641);
+      this.ClientSize = new System.Drawing.Size(1174, 641);
       this.Controls.Add(this.removeSelectedEntry);
       this.Controls.Add(this.fixedEntryGroup);
       this.Controls.Add(this.groupBox2);

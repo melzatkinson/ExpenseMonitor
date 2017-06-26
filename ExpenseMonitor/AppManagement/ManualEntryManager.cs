@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
 
@@ -66,6 +67,23 @@ namespace ExpenseMonitor
     protected virtual void OnManualEntriesChanged()
     {
       ManualEntriesChanged?.Invoke( this, EventArgs.Empty );
+    }
+
+    //-------------------------------------------------------------------------
+
+    public int GetTotalAmountForCategory( string categoryName, DateTime startDate, DateTime endDate )
+    {
+      double total = 0.0;
+
+      foreach( var entry in _entries )
+      {
+        if( entry.Category == categoryName &&
+            DateTime.Compare( startDate, entry.Date ) <= 0 &&
+            DateTime.Compare( endDate, entry.Date ) >= 0 )
+          total += entry.Amount;
+      }
+
+      return ( int )total;
     }
 
     //-------------------------------------------------------------------------
