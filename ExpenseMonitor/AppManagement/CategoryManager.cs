@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -7,8 +8,8 @@ namespace ExpenseMonitor
 {
   public class CategoryManager
   {
-    private List<string> _categories = new List<string>();
-    public List<string> Categories => _categories;
+    private Dictionary<string, double> _categoryInfos = new Dictionary<string, double>();
+    public Dictionary<string, double> CategoryInfos => _categoryInfos;
 
     public delegate void CategoriesChangedEventHandler( object source, EventArgs args );
     public event CategoriesChangedEventHandler CategoriesChanged;
@@ -19,23 +20,40 @@ namespace ExpenseMonitor
     {
       foreach( var category in xmlList )
       {
-        if( category != null ) _categories.Add( category.GetAttribute( "name" ) );
+        _categoryInfos.Add( category.GetAttribute( "name" ), double.Parse( category.GetAttribute( "budget" ), CultureInfo.InvariantCulture ) );
       }
     }
 
     //-------------------------------------------------------------------------
 
-    public void AddCategory( string categoryName )
+    public void AddCategory( string categoryName, double amount )
     {
-      if( _categories.Contains( categoryName ) || categoryName == "" )
+      if( _categoryInfos.ContainsKey( categoryName ) || categoryName == "" )
       {
         MessageBox.Show( "Invalid! Empty or duplicate." );
       }
       else
       {
-        _categories.Add( categoryName );
+        _categoryInfos.Add( categoryName, amount );
         OnCategoriesChanged();
       }
+    }
+
+    //-------------------------------------------------------------------------
+
+    public void UpdateCategoryBudget( string categoryName, double newAmount )
+    {
+      _categoryInfos[ categoryName ] = newAmount;
+    }
+
+    //-------------------------------------------------------------------------
+
+    public double GetBudgetFromName( string categoryName )
+    {
+      double budget;
+      _categoryInfos.TryGetValue( categoryName, out budget );
+
+      return budget;
     }
 
     //-------------------------------------------------------------------------

@@ -48,7 +48,20 @@
   <ItemGroup>
     <Compile Include="AppManagement\AppManager.cs" />
     <Compile Include="AppManagement\CategoryManager.cs" />
-    <Compile Include="AppManagement\EntryManager.cs" />
+    <Compile Include="AppManagement\ManualEntryManager.cs" />
+    <Compile Include="AppManagement\RecurringEntryManager.cs" />
+    <Compile Include="Gui\ChangeCategoryBudgetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\ChangeCategoryBudgetForm.Designer.cs">
+      <DependentUpon>ChangeCategoryBudgetForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\AddFixedEntryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\AddFixedEntryForm.Designer.cs">
+      <DependentUpon>AddFixedEntryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gui\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,6 +76,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="AppManagement\XmlStream.cs" />
+    <EmbeddedResource Include="Gui\AddFixedEntryForm.resx">
+      <DependentUpon>AddFixedEntryForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\ChangeCategoryBudgetForm.resx">
+      <DependentUpon>ChangeCategoryBudgetForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Gui\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

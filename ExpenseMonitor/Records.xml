@@ -1,10 +1,24 @@
 <Root>
   <Categories>
-    <Category name="petrol"/>
-    <Category name="groceries"/>
+    <Category name="petrol" budget="100" />
+    <Category name="groceries" budget="100" />
+    <Category name="Entertainment" budget="500" />
+    <Category name="Cosmetics" budget="2000" />
+    <Category name="NEW NEW" budget="2000" />
+    <Category name="Movies" budget="100" />
+    <Category name="Rent" budget="100" />
   </Categories>
-  
-  <Entries>
-    <Entry date="" category="" amount="" description=""/>
-  </Entries>
+  <ManualEntries>
+    <ManualEntry date="23/06/2017" category="groceries" amount="100" description="Woolworths" />
+    <ManualEntry date="24/06/2017" category="petrol" amount="500" description="" />
+    <ManualEntry date="24/06/2017" category="Cosmetics" amount="300" description="Dischem" />
+    <ManualEntry date="26/06/2017" category="Rent" amount="4000" description="" />
+    <ManualEntry date="26/06/2017" category="petrol" amount="15000" description="" />
+    <ManualEntry date="26/06/2017" category="Entertainment" amount="100" description="" />
+  </ManualEntries>
+  <RecurringEntries>
+    <RecurringEntry category="Rent" amount="4000" description="" />
+    <RecurringEntry category="petrol" amount="15000" description="" />
+    <RecurringEntry category="Entertainment" amount="100" description="" />
+  </RecurringEntries>
 </Root>

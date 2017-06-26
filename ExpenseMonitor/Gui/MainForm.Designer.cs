@@ -30,7 +30,7 @@ namespace ExpenseMonitor
     /// </summary>
     private void InitializeComponent()
     {
-      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.manualEntryGroup = new System.Windows.Forms.GroupBox();
       this.AddNewEntry = new System.Windows.Forms.Button();
       this.addNewCategory = new System.Windows.Forms.Label();
       this.descriptionInput = new System.Windows.Forms.TextBox();
@@ -40,37 +40,43 @@ namespace ExpenseMonitor
       this.categoryLabel = new System.Windows.Forms.Label();
       this.existingCategories = new System.Windows.Forms.ComboBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.endDatePicker = new System.Windows.Forms.DateTimePicker();
+      this.endDateLabel = new System.Windows.Forms.Label();
+      this.startDateLabel = new System.Windows.Forms.Label();
+      this.startDatePicker = new System.Windows.Forms.DateTimePicker();
       this.recordsTable = new System.Windows.Forms.DataGridView();
       this.EntryCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.EntryAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.EntryDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.EntryDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.startDatePicker = new System.Windows.Forms.DateTimePicker();
-      this.startDateLabel = new System.Windows.Forms.Label();
-      this.endDateLabel = new System.Windows.Forms.Label();
-      this.endDatePicker = new System.Windows.Forms.DateTimePicker();
-      this.groupBox1.SuspendLayout();
+      this.changeBudget = new System.Windows.Forms.Label();
+      this.fixedEntryGroup = new System.Windows.Forms.GroupBox();
+      this.addFixedEntryButton = new System.Windows.Forms.Button();
+      this.removeSelectedEntry = new System.Windows.Forms.Button();
+      this.manualEntryGroup.SuspendLayout();
       this.groupBox2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.recordsTable)).BeginInit();
+      this.fixedEntryGroup.SuspendLayout();
       this.SuspendLayout();
       // 
-      // groupBox1
+      // manualEntryGroup
       // 
-      this.groupBox1.AutoSize = true;
-      this.groupBox1.Controls.Add(this.AddNewEntry);
-      this.groupBox1.Controls.Add(this.addNewCategory);
-      this.groupBox1.Controls.Add(this.descriptionInput);
-      this.groupBox1.Controls.Add(this.description);
-      this.groupBox1.Controls.Add(this.amountInput);
-      this.groupBox1.Controls.Add(this.amountLabel);
-      this.groupBox1.Controls.Add(this.categoryLabel);
-      this.groupBox1.Controls.Add(this.existingCategories);
-      this.groupBox1.Location = new System.Drawing.Point(25, 28);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(618, 180);
-      this.groupBox1.TabIndex = 0;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Add";
+      this.manualEntryGroup.AutoSize = true;
+      this.manualEntryGroup.Controls.Add(this.changeBudget);
+      this.manualEntryGroup.Controls.Add(this.AddNewEntry);
+      this.manualEntryGroup.Controls.Add(this.addNewCategory);
+      this.manualEntryGroup.Controls.Add(this.descriptionInput);
+      this.manualEntryGroup.Controls.Add(this.description);
+      this.manualEntryGroup.Controls.Add(this.amountInput);
+      this.manualEntryGroup.Controls.Add(this.amountLabel);
+      this.manualEntryGroup.Controls.Add(this.categoryLabel);
+      this.manualEntryGroup.Controls.Add(this.existingCategories);
+      this.manualEntryGroup.Location = new System.Drawing.Point(25, 28);
+      this.manualEntryGroup.Name = "manualEntryGroup";
+      this.manualEntryGroup.Size = new System.Drawing.Size(618, 180);
+      this.manualEntryGroup.TabIndex = 0;
+      this.manualEntryGroup.TabStop = false;
+      this.manualEntryGroup.Text = "Add Manual Entry";
       // 
       // AddNewEntry
       // 
@@ -85,13 +91,13 @@ namespace ExpenseMonitor
       // addNewCategory
       // 
       this.addNewCategory.AutoSize = true;
-      this.addNewCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.addNewCategory.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+      this.addNewCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.addNewCategory.ForeColor = System.Drawing.SystemColors.Highlight;
       this.addNewCategory.Location = new System.Drawing.Point(295, 32);
       this.addNewCategory.Name = "addNewCategory";
-      this.addNewCategory.Size = new System.Drawing.Size(58, 13);
+      this.addNewCategory.Size = new System.Drawing.Size(49, 13);
       this.addNewCategory.TabIndex = 6;
-      this.addNewCategory.Text = "Add new...";
+      this.addNewCategory.Text = "Add new";
       this.addNewCategory.Click += new System.EventHandler(this.addNewCategory_Click);
       // 
       // descriptionInput
@@ -152,12 +158,46 @@ namespace ExpenseMonitor
       this.groupBox2.Controls.Add(this.startDateLabel);
       this.groupBox2.Controls.Add(this.startDatePicker);
       this.groupBox2.Controls.Add(this.recordsTable);
-      this.groupBox2.Location = new System.Drawing.Point(28, 215);
+      this.groupBox2.Location = new System.Drawing.Point(25, 298);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Size = new System.Drawing.Size(614, 291);
       this.groupBox2.TabIndex = 1;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "View";
+      // 
+      // endDatePicker
+      // 
+      this.endDatePicker.Location = new System.Drawing.Point(356, 29);
+      this.endDatePicker.Name = "endDatePicker";
+      this.endDatePicker.Size = new System.Drawing.Size(200, 20);
+      this.endDatePicker.TabIndex = 4;
+      this.endDatePicker.ValueChanged += new System.EventHandler(this.endDatePicker_ValueChanged);
+      // 
+      // endDateLabel
+      // 
+      this.endDateLabel.AutoSize = true;
+      this.endDateLabel.Location = new System.Drawing.Point(295, 33);
+      this.endDateLabel.Name = "endDateLabel";
+      this.endDateLabel.Size = new System.Drawing.Size(55, 13);
+      this.endDateLabel.TabIndex = 3;
+      this.endDateLabel.Text = "End Date:";
+      // 
+      // startDateLabel
+      // 
+      this.startDateLabel.AutoSize = true;
+      this.startDateLabel.Location = new System.Drawing.Point(15, 33);
+      this.startDateLabel.Name = "startDateLabel";
+      this.startDateLabel.Size = new System.Drawing.Size(58, 13);
+      this.startDateLabel.TabIndex = 2;
+      this.startDateLabel.Text = "Start Date:";
+      // 
+      // startDatePicker
+      // 
+      this.startDatePicker.Location = new System.Drawing.Point(79, 29);
+      this.startDatePicker.Name = "startDatePicker";
+      this.startDatePicker.Size = new System.Drawing.Size(200, 20);
+      this.startDatePicker.TabIndex = 1;
+      this.startDatePicker.ValueChanged += new System.EventHandler(this.startDatePicker_ValueChanged);
       // 
       // recordsTable
       // 
@@ -193,54 +233,65 @@ namespace ExpenseMonitor
       this.EntryDescription.HeaderText = "Description";
       this.EntryDescription.Name = "EntryDescription";
       // 
-      // startDatePicker
+      // changeBudget
       // 
-      this.startDatePicker.Location = new System.Drawing.Point(79, 29);
-      this.startDatePicker.Name = "startDatePicker";
-      this.startDatePicker.Size = new System.Drawing.Size(200, 20);
-      this.startDatePicker.TabIndex = 1;
-      this.startDatePicker.ValueChanged += new System.EventHandler(this.startDatePicker_ValueChanged);
+      this.changeBudget.AutoSize = true;
+      this.changeBudget.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.changeBudget.ForeColor = System.Drawing.SystemColors.Highlight;
+      this.changeBudget.Location = new System.Drawing.Point(342, 32);
+      this.changeBudget.Name = "changeBudget";
+      this.changeBudget.Size = new System.Drawing.Size(89, 13);
+      this.changeBudget.TabIndex = 8;
+      this.changeBudget.Text = "/  Update budget";
+      this.changeBudget.Click += new System.EventHandler(this.changeBudget_Click);
       // 
-      // startDateLabel
+      // fixedEntryGroup
       // 
-      this.startDateLabel.AutoSize = true;
-      this.startDateLabel.Location = new System.Drawing.Point(15, 33);
-      this.startDateLabel.Name = "startDateLabel";
-      this.startDateLabel.Size = new System.Drawing.Size(58, 13);
-      this.startDateLabel.TabIndex = 2;
-      this.startDateLabel.Text = "Start Date:";
+      this.fixedEntryGroup.Controls.Add(this.addFixedEntryButton);
+      this.fixedEntryGroup.Location = new System.Drawing.Point(25, 215);
+      this.fixedEntryGroup.Name = "fixedEntryGroup";
+      this.fixedEntryGroup.Size = new System.Drawing.Size(614, 77);
+      this.fixedEntryGroup.TabIndex = 2;
+      this.fixedEntryGroup.TabStop = false;
+      this.fixedEntryGroup.Text = "Add Fixed Entry";
       // 
-      // endDateLabel
+      // addFixedEntryButton
       // 
-      this.endDateLabel.AutoSize = true;
-      this.endDateLabel.Location = new System.Drawing.Point(295, 33);
-      this.endDateLabel.Name = "endDateLabel";
-      this.endDateLabel.Size = new System.Drawing.Size(55, 13);
-      this.endDateLabel.TabIndex = 3;
-      this.endDateLabel.Text = "End Date:";
+      this.addFixedEntryButton.Location = new System.Drawing.Point(19, 37);
+      this.addFixedEntryButton.Name = "addFixedEntryButton";
+      this.addFixedEntryButton.Size = new System.Drawing.Size(75, 23);
+      this.addFixedEntryButton.TabIndex = 0;
+      this.addFixedEntryButton.Text = "Add";
+      this.addFixedEntryButton.UseVisualStyleBackColor = true;
+      this.addFixedEntryButton.Click += new System.EventHandler(this.addFixedEntryButton_Click);
       // 
-      // endDatePicker
+      // removeSelectedEntry
       // 
-      this.endDatePicker.Location = new System.Drawing.Point(356, 29);
-      this.endDatePicker.Name = "endDatePicker";
-      this.endDatePicker.Size = new System.Drawing.Size(200, 20);
-      this.endDatePicker.TabIndex = 4;
-      this.endDatePicker.ValueChanged += new System.EventHandler(this.endDatePicker_ValueChanged);
+      this.removeSelectedEntry.Location = new System.Drawing.Point(31, 596);
+      this.removeSelectedEntry.Name = "removeSelectedEntry";
+      this.removeSelectedEntry.Size = new System.Drawing.Size(130, 23);
+      this.removeSelectedEntry.TabIndex = 3;
+      this.removeSelectedEntry.Text = "Remove Selected";
+      this.removeSelectedEntry.UseVisualStyleBackColor = true;
+      this.removeSelectedEntry.Click += new System.EventHandler(this.removeSelectedEntry_Click);
       // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(679, 641);
+      this.Controls.Add(this.removeSelectedEntry);
+      this.Controls.Add(this.fixedEntryGroup);
       this.Controls.Add(this.groupBox2);
-      this.Controls.Add(this.groupBox1);
+      this.Controls.Add(this.manualEntryGroup);
       this.Name = "MainForm";
       this.Text = "Expense Monitor";
-      this.groupBox1.ResumeLayout(false);
-      this.groupBox1.PerformLayout();
+      this.manualEntryGroup.ResumeLayout(false);
+      this.manualEntryGroup.PerformLayout();
       this.groupBox2.ResumeLayout(false);
       this.groupBox2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.recordsTable)).EndInit();
+      this.fixedEntryGroup.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -248,7 +299,7 @@ namespace ExpenseMonitor
 
     #endregion
 
-    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.GroupBox manualEntryGroup;
     private System.Windows.Forms.Label addNewCategory;
     private System.Windows.Forms.TextBox descriptionInput;
     private System.Windows.Forms.Label description;
@@ -267,6 +318,10 @@ namespace ExpenseMonitor
     private DateTimePicker startDatePicker;
     private Label endDateLabel;
     private DateTimePicker endDatePicker;
+    private Label changeBudget;
+    private GroupBox fixedEntryGroup;
+    private Button addFixedEntryButton;
+    private Button removeSelectedEntry;
   }
 }
 

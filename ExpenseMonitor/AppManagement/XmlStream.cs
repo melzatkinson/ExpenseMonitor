@@ -41,26 +41,28 @@ namespace ExpenseMonitor
 
     //-------------------------------------------------------------------------
 
-    public void WriteToXml( string fileName, CategoryManager categoryManager, EntryManager entryManager )
+    public void WriteToXml( string fileName, CategoryManager categoryManager, ManualEntryManager manualEntryManager, RecurringEntryManager recurringEntryManager )
     {
       XmlDocument doc = new XmlDocument();
-      XmlElement root = doc.CreateElement("Root");
+      XmlElement root = doc.CreateElement( "Root" );
       root.AppendChild( CreateCategoriesElement( doc, categoryManager ) );
-      root.AppendChild( CreateEntriesElement( doc, entryManager ) );
-      doc.AppendChild(root);
+      root.AppendChild( CreateEntriesElement( doc, manualEntryManager ) );
+      root.AppendChild( CreateRecurringEntriesElement( doc, recurringEntryManager ) );
+      doc.AppendChild( root );
 
       doc.Save( fileName );
     }
 
     //-------------------------------------------------------------------------
 
-    private XmlElement CreateEntriesElement( XmlDocument doc, EntryManager entryManager )
+    private XmlElement CreateEntriesElement( XmlDocument doc, ManualEntryManager manualEntryManager )
     {
-      XmlElement entriesElement = CreateElement( doc, "Entries" );
+      XmlElement entriesElement = CreateElement( doc, "ManualEntries" );
 
-      foreach( var entry in entryManager.Entries )
+      foreach( var entry in manualEntryManager.Entries )
       {
-        XmlElement entryElement = CreateElement( doc, "Entry" );
+        XmlElement entryElement = CreateElement( doc, "ManualEntry" );
+
         entryElement.SetAttribute( "date", entry.Date.ToString( "dd/MM/yyyy" ) );
         entryElement.SetAttribute( "category", entry.Category );
         entryElement.SetAttribute( "amount", Convert.ToString( entry.Amount, CultureInfo.InvariantCulture ) );
@@ -78,15 +80,37 @@ namespace ExpenseMonitor
     {
       XmlElement categoriesElement = CreateElement( doc, "Categories" );
 
-      foreach( var category in categoryManager.Categories )
+      foreach( var category in categoryManager.CategoryInfos )
       {
         XmlElement categoryElement = CreateElement( doc, "Category" );
-        categoryElement.SetAttribute( "name", category );
+
+        categoryElement.SetAttribute( "name", category.Key );
+        categoryElement.SetAttribute( "budget", Convert.ToString( category.Value, CultureInfo.CurrentCulture ) );
 
         categoriesElement.AppendChild( categoryElement );
       }
 
       return categoriesElement;
+    }
+
+    //-------------------------------------------------------------------------
+
+    private XmlElement CreateRecurringEntriesElement( XmlDocument doc, RecurringEntryManager recurringEntryManager )
+    {
+      XmlElement entriesElement = CreateElement( doc, "RecurringEntries" );
+
+      foreach( var entry in recurringEntryManager.RecurringEntries )
+      {
+        XmlElement entryElement = CreateElement( doc, "RecurringEntry" );
+
+        entryElement.SetAttribute( "category", entry.Category );
+        entryElement.SetAttribute( "amount", Convert.ToString( entry.Amount, CultureInfo.InvariantCulture ) );
+        entryElement.SetAttribute( "description", entry.Description );
+
+        entriesElement.AppendChild( entryElement );
+      }
+
+      return entriesElement;
     }
 
     //-------------------------------------------------------------------------

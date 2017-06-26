@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace ExpenseMonitor
 {
-  public class EntryManager
+  public class ManualEntryManager
   {
     public struct Entry
     {
@@ -17,6 +17,9 @@ namespace ExpenseMonitor
 
     private List<Entry> _entries = new List<Entry>();
     public List<Entry> Entries => _entries;
+
+    public delegate void ManualEntriesChangedEventHandler( object source, EventArgs args );
+    public event ManualEntriesChangedEventHandler ManualEntriesChanged;
 
     //-------------------------------------------------------------------------
 
@@ -45,6 +48,24 @@ namespace ExpenseMonitor
       newEntry.Description = description;
 
       _entries.Add( newEntry );
+
+      OnManualEntriesChanged();
+    }
+
+    //-------------------------------------------------------------------------
+
+    public void RemoveAt( int index )
+    {
+      _entries.RemoveAt( index );
+
+      OnManualEntriesChanged();
+    }
+
+    //-------------------------------------------------------------------------
+
+    protected virtual void OnManualEntriesChanged()
+    {
+      ManualEntriesChanged?.Invoke( this, EventArgs.Empty );
     }
 
     //-------------------------------------------------------------------------
