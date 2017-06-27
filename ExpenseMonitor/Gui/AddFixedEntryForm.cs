@@ -22,7 +22,6 @@ namespace ExpenseMonitor.Gui
 
     //-------------------------------------------------------------------------
 
-
     public void OnShown( object sender, EventArgs e )
     {
       fixedEntriesTable.Rows.Clear();
@@ -51,7 +50,6 @@ namespace ExpenseMonitor.Gui
         fixedEntriesTable.Rows[index].Cells["selected"].Value = false;
         fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryAmount" ].Value = entry.Amount;
         fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryDescription" ].Value = entry.Description;
-
       }
     }
 

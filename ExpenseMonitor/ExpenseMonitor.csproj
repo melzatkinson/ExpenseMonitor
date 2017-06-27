@@ -50,6 +50,7 @@
     <Compile Include="AppManagement\CategoryManager.cs" />
     <Compile Include="AppManagement\ManualEntryManager.cs" />
     <Compile Include="AppManagement\RecurringEntryManager.cs" />
+    <Compile Include="Gui\BarGraph.cs" />
     <Compile Include="Gui\ChangeCategoryBudgetForm.cs">
       <SubType>Form</SubType>
     </Compile>

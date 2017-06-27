@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace ExpenseMonitor
@@ -86,6 +87,39 @@ namespace ExpenseMonitor
       return ( int )total;
     }
 
+    //-------------------------------------------------------------------------
+
+    public int GetTotalAmountForMonth( DateTime date )
+    {
+      double total = 0.0;
+
+      foreach( var entry in _entries )
+      {
+        if( entry.Date.Month == date.Month &&
+            entry.Date.Year == date.Year )
+          total += entry.Amount;
+      }
+
+      return ( int )total;
+    }
+
+    //-------------------------------------------------------------------------
+
+    public int GetTotalAmountForCategoryInMonth( string categoryName, DateTime date )
+    {
+      double total = 0.0;
+
+      foreach( var entry in _entries )
+      {
+        if( entry.Category == categoryName && 
+            entry.Date.Month == date.Month &&
+            entry.Date.Year == date.Year )
+          total += entry.Amount;
+      }
+
+      return ( int )total;
+    }
+    
     //-------------------------------------------------------------------------
   }
 }

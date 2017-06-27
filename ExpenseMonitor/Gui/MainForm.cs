@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -13,16 +12,9 @@ namespace ExpenseMonitor
     private readonly AddNewCategoryForm _addNewCategoryForm;
     private readonly ChangeCategoryBudgetForm _changeCategoryBudgetForm;
     private readonly AddFixedEntryForm _addFixedEntryForm;
-
+    private readonly BarGraph _barGraph;
 
     private readonly AppManager _appManager;
-
-    private readonly Pen _blackPen = new Pen( Color.Black, 1 );
-    private readonly SolidBrush _redBrush = new SolidBrush( Color.Red );
-    private readonly SolidBrush _greenBrush = new SolidBrush( Color.Green );
-    private readonly SolidBrush _purpleBrush = new SolidBrush( Color.Purple );
-    private readonly SolidBrush _blackBrush = new SolidBrush( Color.Black );
-
 
     //-------------------------------------------------------------------------
 
@@ -32,17 +24,20 @@ namespace ExpenseMonitor
       _addNewCategoryForm = new AddNewCategoryForm( _appManager );
       _changeCategoryBudgetForm = new ChangeCategoryBudgetForm( _appManager );
       _addFixedEntryForm = new AddFixedEntryForm( _appManager );
+      _barGraph = new BarGraph( _appManager );
 
       _appManager.CategoryManager.CategoriesChanged += OnCategoriesChanged;
       _appManager.ManualEntryManager.ManualEntriesChanged += OnManualEntriesChanged;
-      Paint += DrawGraph;
+      Paint += _barGraph.DrawGraph;
 
       InitializeComponent();
 
       RefreshCategoriesComboBox( _appManager.CategoryManager );
-      existingCategories.SelectedIndex = 0;
 
-      RefreshRecords();
+      if( existingCategories.Items.Count > 0 )
+        existingCategories.SelectedIndex = 0;
+
+      RefreshForm();
 
       DateTime threeMonthsAgo = DateTime.Now.AddMonths( -3 );
       startDatePicker.Value = threeMonthsAgo;
@@ -91,7 +86,7 @@ namespace ExpenseMonitor
 
     public void OnManualEntriesChanged( object source, EventArgs e )
     {
-      RefreshRecords();
+      RefreshForm();
     }
 
     //-------------------------------------------------------------------------
@@ -104,6 +99,15 @@ namespace ExpenseMonitor
       {
         existingCategories.Items.Add( category.Key );
       }
+    }
+
+    //-------------------------------------------------------------------------
+
+    private void RefreshForm()
+    {
+      RefreshRecords();
+      RefreshProfilingInformation();
+      Invalidate();
     }
 
     //-------------------------------------------------------------------------
@@ -128,6 +132,28 @@ namespace ExpenseMonitor
 
     //-------------------------------------------------------------------------
 
+    private void RefreshProfilingInformation()
+    {
+      double totalExpenditure = _appManager.ManualEntryManager.GetTotalAmountForMonth( endDatePicker.Value.Date );
+      double totalBudget = _appManager.CategoryManager.GetTotalBudgetAmount();
+
+      totalsOutput.Text = Convert.ToString( totalExpenditure, CultureInfo.InvariantCulture );
+      totalsOutput.BackColor = totalExpenditure > totalBudget ? Color.Red : Color.Green;
+
+      budgetTotalOutput.Text = Convert.ToString( totalBudget, CultureInfo.InvariantCulture );
+
+      totalsTable.Rows.Clear();
+
+      foreach( var category in _appManager.CategoryManager.CategoryInfos.Keys )
+      {
+        var index = totalsTable.Rows.Add();
+        totalsTable.Rows[ index ].Cells[ "totalsCategory" ].Value = category;
+        totalsTable.Rows[ index ].Cells[ "totalsAmount" ].Value = _appManager.ManualEntryManager.GetTotalAmountForCategoryInMonth( category, endDatePicker.Value.Date );
+      }
+    }
+
+    //-------------------------------------------------------------------------
+
     private void AddNewEntry_Click( object sender, EventArgs e )
     {
       _appManager.ManualEntryManager.Add(
@@ -146,16 +172,14 @@ namespace ExpenseMonitor
 
     private void startDatePicker_ValueChanged( object sender, EventArgs e )
     {
-      RefreshRecords();
-      Invalidate();
+      RefreshForm();
     }
 
     //-------------------------------------------------------------------------
 
     private void endDatePicker_ValueChanged( object sender, EventArgs e )
     {
-      RefreshRecords();
-      Invalidate();
+      RefreshForm();
     }
 
     //-------------------------------------------------------------------------
@@ -171,74 +195,16 @@ namespace ExpenseMonitor
 
     //-------------------------------------------------------------------------
 
-    public void DrawGraph( object sender, System.Windows.Forms.PaintEventArgs e )
+    public DateTime GetSelectedStartDate()
     {
-      double scale = 0.05;
-
-      Point startPoint = new Point( 700, 550 );
-
-      DrawAxes( e, _blackPen, startPoint );
-
-      double barWidth = 400 / ( ( double )_appManager.CategoryManager.CategoryInfos.Count * 3 );
-
-      foreach( var category in _appManager.CategoryManager.CategoryInfos )
-      {
-        startPoint.X += ( int )barWidth;
-
-        DrawActualBar( e, category, barWidth, scale, startPoint );
-
-        startPoint.X += ( int )barWidth;
-
-        AddBudgetBar( e, barWidth, category.Value, scale, startPoint );
-
-        startPoint.X += ( int )barWidth;
-
-        AddXAxisLabeling( e, startPoint, category.Key, (int)barWidth );
-      }
+      return startDatePicker.Value.Date;
     }
 
     //-------------------------------------------------------------------------
 
-    private void DrawActualBar( PaintEventArgs e, KeyValuePair<string, double> category, double barWidth, double scale, Point startPoint )
+    public DateTime GetSelectedEndDate()
     {
-      int total = _appManager.ManualEntryManager.GetTotalAmountForCategory( category.Key, startDatePicker.Value.Date, endDatePicker.Value.Date );
-
-      Size size = new Size( ( int )barWidth, ( int )( total * scale ) );
-      int y = startPoint.Y - ( int )( total * scale );
-      e.Graphics.FillRectangle( total > category.Value ? _redBrush : _greenBrush, new Rectangle( new Point( startPoint.X, y ), size ) );
-    }
-
-    //-------------------------------------------------------------------------
-
-    private void AddBudgetBar( PaintEventArgs e, double barWidth, double budget, double scale, Point startPoint )
-    {
-      Size size = new Size( ( int )barWidth, ( int )( budget * scale ) );
-      int x = startPoint.X;
-      int y = startPoint.Y - ( int )( budget * scale );
-      e.Graphics.FillRectangle( _purpleBrush, new Rectangle( new Point( x, y ), size ) );
-    }
-
-    //-------------------------------------------------------------------------
-
-    private void AddXAxisLabeling(PaintEventArgs e, Point startPoint, string categoryName, int barWidth)
-    {
-      e.Graphics.DrawLine( _blackPen, startPoint, new Point( startPoint.X, startPoint.Y + 20 ) );
-      StringFormat drawFormat = new StringFormat( StringFormatFlags.DirectionVertical );
-
-      e.Graphics.DrawString( categoryName,
-        new Font( "Arial", 8.0f, FontStyle.Regular ),
-        _blackBrush,
-        startPoint.X - ( barWidth * 2),
-        ( startPoint.Y + 5 ),
-        drawFormat );
-    }
-
-    //-------------------------------------------------------------------------
-
-    private static void DrawAxes( PaintEventArgs e, Pen blackPen, Point startPoint )
-    {
-      e.Graphics.DrawLine( blackPen, startPoint, new Point( 1100, 550 ) );
-      e.Graphics.DrawLine( blackPen, startPoint, new Point( 700, 50 ) );
+      return endDatePicker.Value.Date;
     }
 
     //-------------------------------------------------------------------------

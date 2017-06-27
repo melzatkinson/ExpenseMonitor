@@ -64,5 +64,19 @@ namespace ExpenseMonitor
     }
 
     //-------------------------------------------------------------------------
+
+    public double GetTotalBudgetAmount()
+    {
+      double total = 0;
+
+      foreach( var amount in _categoryInfos.Values )
+      {
+        total += amount;
+      }
+
+      return total;
+    }
+
+    //-------------------------------------------------------------------------
   }
 }

@@ -31,6 +31,7 @@ namespace ExpenseMonitor
     private void InitializeComponent()
     {
       this.manualEntryGroup = new System.Windows.Forms.GroupBox();
+      this.changeBudget = new System.Windows.Forms.Label();
       this.AddNewEntry = new System.Windows.Forms.Button();
       this.addNewCategory = new System.Windows.Forms.Label();
       this.descriptionInput = new System.Windows.Forms.TextBox();
@@ -49,14 +50,22 @@ namespace ExpenseMonitor
       this.EntryAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.EntryDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.EntryDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.changeBudget = new System.Windows.Forms.Label();
       this.fixedEntryGroup = new System.Windows.Forms.GroupBox();
       this.addFixedEntryButton = new System.Windows.Forms.Button();
       this.removeSelectedEntry = new System.Windows.Forms.Button();
+      this.profilingGroup = new System.Windows.Forms.GroupBox();
+      this.totalsTable = new System.Windows.Forms.DataGridView();
+      this.totalsCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.totalsAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.totalsOutput = new System.Windows.Forms.TextBox();
+      this.totalLabel = new System.Windows.Forms.Label();
+      this.budgetTotalOutput = new System.Windows.Forms.TextBox();
       this.manualEntryGroup.SuspendLayout();
       this.groupBox2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.recordsTable)).BeginInit();
       this.fixedEntryGroup.SuspendLayout();
+      this.profilingGroup.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.totalsTable)).BeginInit();
       this.SuspendLayout();
       // 
       // manualEntryGroup
@@ -77,6 +86,18 @@ namespace ExpenseMonitor
       this.manualEntryGroup.TabIndex = 0;
       this.manualEntryGroup.TabStop = false;
       this.manualEntryGroup.Text = "Add Manual Entry";
+      // 
+      // changeBudget
+      // 
+      this.changeBudget.AutoSize = true;
+      this.changeBudget.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.changeBudget.ForeColor = System.Drawing.SystemColors.Highlight;
+      this.changeBudget.Location = new System.Drawing.Point(342, 32);
+      this.changeBudget.Name = "changeBudget";
+      this.changeBudget.Size = new System.Drawing.Size(89, 13);
+      this.changeBudget.TabIndex = 8;
+      this.changeBudget.Text = "/  Update budget";
+      this.changeBudget.Click += new System.EventHandler(this.changeBudget_Click);
       // 
       // AddNewEntry
       // 
@@ -233,18 +254,6 @@ namespace ExpenseMonitor
       this.EntryDescription.HeaderText = "Description";
       this.EntryDescription.Name = "EntryDescription";
       // 
-      // changeBudget
-      // 
-      this.changeBudget.AutoSize = true;
-      this.changeBudget.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.changeBudget.ForeColor = System.Drawing.SystemColors.Highlight;
-      this.changeBudget.Location = new System.Drawing.Point(342, 32);
-      this.changeBudget.Name = "changeBudget";
-      this.changeBudget.Size = new System.Drawing.Size(89, 13);
-      this.changeBudget.TabIndex = 8;
-      this.changeBudget.Text = "/  Update budget";
-      this.changeBudget.Click += new System.EventHandler(this.changeBudget_Click);
-      // 
       // fixedEntryGroup
       // 
       this.fixedEntryGroup.Controls.Add(this.addFixedEntryButton);
@@ -275,11 +284,77 @@ namespace ExpenseMonitor
       this.removeSelectedEntry.UseVisualStyleBackColor = true;
       this.removeSelectedEntry.Click += new System.EventHandler(this.removeSelectedEntry_Click);
       // 
+      // profilingGroup
+      // 
+      this.profilingGroup.Controls.Add(this.budgetTotalOutput);
+      this.profilingGroup.Controls.Add(this.totalsTable);
+      this.profilingGroup.Controls.Add(this.totalsOutput);
+      this.profilingGroup.Controls.Add(this.totalLabel);
+      this.profilingGroup.Location = new System.Drawing.Point(1130, 12);
+      this.profilingGroup.Name = "profilingGroup";
+      this.profilingGroup.Size = new System.Drawing.Size(419, 617);
+      this.profilingGroup.TabIndex = 4;
+      this.profilingGroup.TabStop = false;
+      this.profilingGroup.Text = "Profiling";
+      // 
+      // totalsTable
+      // 
+      this.totalsTable.AllowUserToAddRows = false;
+      this.totalsTable.AllowUserToDeleteRows = false;
+      this.totalsTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+      this.totalsTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.totalsTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.totalsCategory,
+            this.totalsAmount});
+      this.totalsTable.Location = new System.Drawing.Point(23, 73);
+      this.totalsTable.Name = "totalsTable";
+      this.totalsTable.ReadOnly = true;
+      this.totalsTable.Size = new System.Drawing.Size(377, 220);
+      this.totalsTable.TabIndex = 2;
+      // 
+      // totalsCategory
+      // 
+      this.totalsCategory.HeaderText = "Category";
+      this.totalsCategory.Name = "totalsCategory";
+      this.totalsCategory.ReadOnly = true;
+      // 
+      // totalsAmount
+      // 
+      this.totalsAmount.HeaderText = "Total";
+      this.totalsAmount.Name = "totalsAmount";
+      this.totalsAmount.ReadOnly = true;
+      // 
+      // totalsOutput
+      // 
+      this.totalsOutput.Location = new System.Drawing.Point(78, 35);
+      this.totalsOutput.Name = "totalsOutput";
+      this.totalsOutput.ReadOnly = true;
+      this.totalsOutput.Size = new System.Drawing.Size(100, 20);
+      this.totalsOutput.TabIndex = 1;
+      // 
+      // totalLabel
+      // 
+      this.totalLabel.AutoSize = true;
+      this.totalLabel.Location = new System.Drawing.Point(20, 38);
+      this.totalLabel.Name = "totalLabel";
+      this.totalLabel.Size = new System.Drawing.Size(34, 13);
+      this.totalLabel.TabIndex = 0;
+      this.totalLabel.Text = "Total:";
+      // 
+      // budgetTotalOutput
+      // 
+      this.budgetTotalOutput.Location = new System.Drawing.Point(184, 35);
+      this.budgetTotalOutput.Name = "budgetTotalOutput";
+      this.budgetTotalOutput.ReadOnly = true;
+      this.budgetTotalOutput.Size = new System.Drawing.Size(100, 20);
+      this.budgetTotalOutput.TabIndex = 3;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1174, 641);
+      this.ClientSize = new System.Drawing.Size(1557, 641);
+      this.Controls.Add(this.profilingGroup);
       this.Controls.Add(this.removeSelectedEntry);
       this.Controls.Add(this.fixedEntryGroup);
       this.Controls.Add(this.groupBox2);
@@ -292,6 +367,9 @@ namespace ExpenseMonitor
       this.groupBox2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.recordsTable)).EndInit();
       this.fixedEntryGroup.ResumeLayout(false);
+      this.profilingGroup.ResumeLayout(false);
+      this.profilingGroup.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.totalsTable)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -322,6 +400,13 @@ namespace ExpenseMonitor
     private GroupBox fixedEntryGroup;
     private Button addFixedEntryButton;
     private Button removeSelectedEntry;
+    private GroupBox profilingGroup;
+    private Label totalLabel;
+    private TextBox totalsOutput;
+    private DataGridView totalsTable;
+    private DataGridViewTextBoxColumn totalsCategory;
+    private DataGridViewTextBoxColumn totalsAmount;
+    private TextBox budgetTotalOutput;
   }
 }
 
