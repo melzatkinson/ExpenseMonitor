@@ -76,13 +76,9 @@ namespace ExpenseMonitor
     {
       double total = 0.0;
 
-      foreach( var entry in _entries )
-      {
-        if( entry.Category == categoryName &&
-            DateTime.Compare( startDate, entry.Date ) <= 0 &&
-            DateTime.Compare( endDate, entry.Date ) >= 0 )
+      foreach( var entry in FilterByDate( startDate, endDate ) )
+        if( entry.Category == categoryName )
           total += entry.Amount;
-      }
 
       return ( int )total;
     }
@@ -93,12 +89,8 @@ namespace ExpenseMonitor
     {
       double total = 0.0;
 
-      foreach( var entry in _entries )
-      {
-        if( entry.Date.Month == date.Month &&
-            entry.Date.Year == date.Year )
-          total += entry.Amount;
-      }
+      foreach( var entry in FilterByMonth( date ) )
+        total += entry.Amount;
 
       return ( int )total;
     }
@@ -109,17 +101,33 @@ namespace ExpenseMonitor
     {
       double total = 0.0;
 
-      foreach( var entry in _entries )
-      {
-        if( entry.Category == categoryName && 
-            entry.Date.Month == date.Month &&
-            entry.Date.Year == date.Year )
+      foreach( var entry in FilterByMonth( date ) )
+        if( entry.Category == categoryName )
           total += entry.Amount;
-      }
 
       return ( int )total;
     }
-    
+
+    //-------------------------------------------------------------------------
+
+    public IEnumerable<Entry> FilterByMonth( DateTime date )
+    {
+      foreach( var entry in _entries )
+        if( entry.Date.Month == date.Month &&
+            entry.Date.Year == date.Year )
+          yield return entry;
+    }
+
+    //-------------------------------------------------------------------------
+
+    public IEnumerable<Entry> FilterByDate( DateTime startDate, DateTime endDate )
+    {
+      foreach( var entry in _entries )
+        if( DateTime.Compare( startDate, entry.Date ) <= 0 &&
+            DateTime.Compare( endDate, entry.Date ) >= 0 )
+          yield return entry;
+    }
+
     //-------------------------------------------------------------------------
   }
 }

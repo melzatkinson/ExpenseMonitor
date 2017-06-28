@@ -7,6 +7,12 @@ using ExpenseMonitor.AppManagement;
 
 public class BarGraph
 {
+  public int MaximumAmount
+  {
+    get { return _maximumAmount; }
+    set { _maximumAmount = value; }
+  }
+
   private readonly AppManager _appManager;
 
   private readonly Pen _blackPen = new Pen( Color.Black, 1 );
@@ -17,8 +23,14 @@ public class BarGraph
 
   private PaintEventArgs _paintEventArgs;
 
-  private const int GraphHeight = 500;
-  private const int MaximumAmount = 10000;
+  private const int GraphHeight = 650;
+  private const int GraphWidth = 550;
+  private const int YaxisDelta = 500;
+
+  private Point _startPoint;
+  private double _barWidth;
+  private int _maximumAmount = 10000;
+  private double _scale;
 
   //-------------------------------------------------------------------------
 
@@ -37,104 +49,103 @@ public class BarGraph
     if( form == null )
       return;
 
-    double scale = 0.05;
+    _startPoint = new Point( 700, 700 );
+    _barWidth = GraphWidth / ( ( double )_appManager.CategoryManager.CategoryInfos.Count * 3 );
+    _scale = (double) GraphHeight / _maximumAmount;
 
-    Point startPoint = new Point( 700, 550 );
-
-    DrawAxes( startPoint );
-    AddYAxisLabeling( startPoint );
-
-    double barWidth = 400 / ( ( double )_appManager.CategoryManager.CategoryInfos.Count * 3 );
+    DrawAxes();
+    AddYAxisLabeling();
 
     foreach( var category in _appManager.CategoryManager.CategoryInfos )
     {
-      startPoint.X += ( int )barWidth;
+      AddXAxisLabeling( category.Key );
 
-      DrawActualBar( category, barWidth, scale, startPoint, form.GetSelectedStartDate(), form.GetSelectedEndDate() );
-
-      startPoint.X += ( int )barWidth;
-
-      AddBudgetBar( barWidth, category.Value, scale, startPoint );
-
-      startPoint.X += ( int )barWidth;
-
-      AddXAxisLabeling( startPoint, category.Key, ( int )barWidth );
+      DrawBars( category, form );
     }
   }
 
   //-------------------------------------------------------------------------
 
-  private void DrawActualBar( KeyValuePair<string, double> category,
-                              double barWidth,
-                              double scale,
-                              Point startPoint,
-                              DateTime startDate,
-                              DateTime endDate )
+  private void DrawBars( KeyValuePair<string, double> category, MainForm form )
   {
-    int total = _appManager.ManualEntryManager.GetTotalAmountForCategory( category.Key, startDate, endDate );
+    _startPoint.X += ( int )_barWidth;
 
-    Size size = new Size( ( int )barWidth, ( int )( total * scale ) );
-    int y = startPoint.Y - ( int )( total * scale );
-    _paintEventArgs.Graphics.FillRectangle( total > category.Value ? _redBrush : _greenBrush, new Rectangle( new Point( startPoint.X, y ), size ) );
+    DrawActualBar( category, form.GetSelectedStartDate(), form.GetSelectedEndDate() );
+
+    _startPoint.X += ( int )_barWidth;
+
+    DrawBudgetBar( category.Value );
+
+    _startPoint.X += ( int )_barWidth;
   }
 
   //-------------------------------------------------------------------------
 
-  private void AddBudgetBar( double barWidth, double budget, double scale, Point startPoint )
+  private void DrawActualBar( KeyValuePair<string, double> category, DateTime startDate, DateTime endDate )
   {
-    Size size = new Size( ( int )barWidth, ( int )( budget * scale ) );
-    int x = startPoint.X;
-    int y = startPoint.Y - ( int )( budget * scale );
+    int total = _appManager.ManualEntryManager.GetTotalAmountForCategory( category.Key, startDate, endDate );
+
+    Size size = new Size( ( int )_barWidth, ( int )( total * _scale ) );
+    int y = _startPoint.Y - ( int )( total * _scale );
+    _paintEventArgs.Graphics.FillRectangle( total > category.Value ? _redBrush : _greenBrush, new Rectangle( new Point( _startPoint.X, y ), size ) );
+  }
+
+  //-------------------------------------------------------------------------
+
+  private void DrawBudgetBar( double budget )
+  {
+    Size size = new Size( ( int )_barWidth, ( int )( budget * _scale ) );
+    int x = _startPoint.X;
+    int y = _startPoint.Y - ( int )( budget * _scale );
     _paintEventArgs.Graphics.FillRectangle( _purpleBrush, new Rectangle( new Point( x, y ), size ) );
   }
 
   //-------------------------------------------------------------------------
 
-  private void AddXAxisLabeling( Point startPoint, string categoryName, int barWidth )
+  private void AddXAxisLabeling( string categoryName )
   {
-    _paintEventArgs.Graphics.DrawLine( _blackPen, startPoint, new Point( startPoint.X, startPoint.Y + 20 ) );
+    _paintEventArgs.Graphics.DrawLine( _blackPen, _startPoint, new Point( _startPoint.X, _startPoint.Y + 20 ) );
     StringFormat drawFormat = new StringFormat( StringFormatFlags.DirectionVertical );
 
     _paintEventArgs.Graphics.DrawString( categoryName,
-      new Font( "Arial", 8.0f, FontStyle.Regular ),
-      _blackBrush,
-      startPoint.X - ( barWidth * 2 ),
-      ( startPoint.Y + 5 ),
-      drawFormat );
+                                         new Font( "Arial", 7.0f, FontStyle.Regular ),
+                                         _blackBrush,
+                                         _startPoint.X + ( int )_barWidth + 10,
+                                         _startPoint.Y + 5,
+                                         drawFormat );
   }
 
   //-------------------------------------------------------------------------
 
-  private void AddYAxisLabeling( Point startPoint )
+  private void AddYAxisLabeling()
   {
-    double x = ( double )GraphHeight / MaximumAmount;
-    int delta = ( int )( x * 500 );
-    int currentYPosition = startPoint.Y;
+    double delta = _scale * YaxisDelta;
+    double currentYPosition = _startPoint.Y;
     int currentLabel = 0;
 
-    while( currentYPosition > ( startPoint.Y - GraphHeight ) )
+    while( currentLabel < _maximumAmount )
     {
-      currentLabel += 500;
+      currentLabel += YaxisDelta;
       currentYPosition -= delta;
-      _paintEventArgs.Graphics.DrawLine( _blackPen, new Point( startPoint.X, currentYPosition ), new Point( startPoint.X - 10, currentYPosition ) );
+      _paintEventArgs.Graphics.DrawLine( _blackPen, new Point( _startPoint.X, ( int )currentYPosition ), new Point( _startPoint.X - 10, ( int )currentYPosition ) );
 
       StringFormat drawFormat = new StringFormat( StringFormatFlags.DirectionRightToLeft );
 
       _paintEventArgs.Graphics.DrawString( Convert.ToString( currentLabel ),
-                                            new Font( "Arial", 8.0f, FontStyle.Regular ),
-                                            _blackBrush,
-                                            startPoint.X - 10,
-                                            currentYPosition - 5,
-                                            drawFormat );
+                                           new Font( "Arial", 8.0f, FontStyle.Regular ),
+                                           _blackBrush,
+                                           _startPoint.X - 10,
+                                           ( int )currentYPosition - 5,
+                                           drawFormat );
     }
   }
 
   //-------------------------------------------------------------------------
 
-  private void DrawAxes( Point startPoint )
+  private void DrawAxes()
   {
-    _paintEventArgs.Graphics.DrawLine( _blackPen, startPoint, new Point( 1100, 550 ) );
-    _paintEventArgs.Graphics.DrawLine( _blackPen, startPoint, new Point( 700, 50 ) );
+    _paintEventArgs.Graphics.DrawLine( _blackPen, _startPoint, new Point( _startPoint.X + GraphWidth, _startPoint.Y ) );
+    _paintEventArgs.Graphics.DrawLine( _blackPen, _startPoint, new Point( _startPoint.X, _startPoint.Y - GraphHeight ) );
   }
 
   //-------------------------------------------------------------------------

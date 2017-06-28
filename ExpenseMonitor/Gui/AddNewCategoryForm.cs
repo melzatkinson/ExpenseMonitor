@@ -24,7 +24,11 @@ namespace ExpenseMonitor
       if( e.KeyCode != Keys.Enter )
         return;
 
-      _appManager.CategoryManager.AddCategory( newCategoryInput.Text, double.Parse( budgetInput.Text, CultureInfo.InvariantCulture ) );
+      if( !_appManager.CategoryManager.AddCategory( newCategoryInput.Text, double.Parse( budgetInput.Text, CultureInfo.InvariantCulture ) ) )
+      {
+        MessageBox.Show( "Invalid! Empty or duplicate." );
+      }
+
       newCategoryInput.Text = "";
       budgetInput.Text = "0.0";
     }

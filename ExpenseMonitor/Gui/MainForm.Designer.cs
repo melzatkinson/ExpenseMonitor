@@ -31,9 +31,7 @@ namespace ExpenseMonitor
     private void InitializeComponent()
     {
       this.manualEntryGroup = new System.Windows.Forms.GroupBox();
-      this.changeBudget = new System.Windows.Forms.Label();
       this.AddNewEntry = new System.Windows.Forms.Button();
-      this.addNewCategory = new System.Windows.Forms.Label();
       this.descriptionInput = new System.Windows.Forms.TextBox();
       this.description = new System.Windows.Forms.Label();
       this.amountInput = new System.Windows.Forms.TextBox();
@@ -54,50 +52,45 @@ namespace ExpenseMonitor
       this.addFixedEntryButton = new System.Windows.Forms.Button();
       this.removeSelectedEntry = new System.Windows.Forms.Button();
       this.profilingGroup = new System.Windows.Forms.GroupBox();
+      this.budgetLabel = new System.Windows.Forms.Label();
+      this.budgetTotalOutput = new System.Windows.Forms.TextBox();
       this.totalsTable = new System.Windows.Forms.DataGridView();
       this.totalsCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.totalsAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.totalsOutput = new System.Windows.Forms.TextBox();
       this.totalLabel = new System.Windows.Forms.Label();
-      this.budgetTotalOutput = new System.Windows.Forms.TextBox();
+      this.categoryManagerGroup = new System.Windows.Forms.GroupBox();
+      this.updateExistingCategoryBudget = new System.Windows.Forms.Button();
+      this.addNewCategory = new System.Windows.Forms.Button();
+      this.maximumGraphYValueLabel = new System.Windows.Forms.Label();
+      this.maximumGraphYValueInput = new System.Windows.Forms.TextBox();
+      this.monthSelectedToProfileLabel = new System.Windows.Forms.Label();
+      this.monthSelectedOutput = new System.Windows.Forms.TextBox();
       this.manualEntryGroup.SuspendLayout();
       this.groupBox2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.recordsTable)).BeginInit();
       this.fixedEntryGroup.SuspendLayout();
       this.profilingGroup.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.totalsTable)).BeginInit();
+      this.categoryManagerGroup.SuspendLayout();
       this.SuspendLayout();
       // 
       // manualEntryGroup
       // 
       this.manualEntryGroup.AutoSize = true;
-      this.manualEntryGroup.Controls.Add(this.changeBudget);
       this.manualEntryGroup.Controls.Add(this.AddNewEntry);
-      this.manualEntryGroup.Controls.Add(this.addNewCategory);
       this.manualEntryGroup.Controls.Add(this.descriptionInput);
       this.manualEntryGroup.Controls.Add(this.description);
       this.manualEntryGroup.Controls.Add(this.amountInput);
       this.manualEntryGroup.Controls.Add(this.amountLabel);
       this.manualEntryGroup.Controls.Add(this.categoryLabel);
       this.manualEntryGroup.Controls.Add(this.existingCategories);
-      this.manualEntryGroup.Location = new System.Drawing.Point(25, 28);
+      this.manualEntryGroup.Location = new System.Drawing.Point(12, 12);
       this.manualEntryGroup.Name = "manualEntryGroup";
-      this.manualEntryGroup.Size = new System.Drawing.Size(618, 180);
+      this.manualEntryGroup.Size = new System.Drawing.Size(320, 180);
       this.manualEntryGroup.TabIndex = 0;
       this.manualEntryGroup.TabStop = false;
       this.manualEntryGroup.Text = "Add Manual Entry";
-      // 
-      // changeBudget
-      // 
-      this.changeBudget.AutoSize = true;
-      this.changeBudget.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.changeBudget.ForeColor = System.Drawing.SystemColors.Highlight;
-      this.changeBudget.Location = new System.Drawing.Point(342, 32);
-      this.changeBudget.Name = "changeBudget";
-      this.changeBudget.Size = new System.Drawing.Size(89, 13);
-      this.changeBudget.TabIndex = 8;
-      this.changeBudget.Text = "/  Update budget";
-      this.changeBudget.Click += new System.EventHandler(this.changeBudget_Click);
       // 
       // AddNewEntry
       // 
@@ -108,18 +101,6 @@ namespace ExpenseMonitor
       this.AddNewEntry.Text = "Add";
       this.AddNewEntry.UseVisualStyleBackColor = true;
       this.AddNewEntry.Click += new System.EventHandler(this.AddNewEntry_Click);
-      // 
-      // addNewCategory
-      // 
-      this.addNewCategory.AutoSize = true;
-      this.addNewCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.addNewCategory.ForeColor = System.Drawing.SystemColors.Highlight;
-      this.addNewCategory.Location = new System.Drawing.Point(295, 32);
-      this.addNewCategory.Name = "addNewCategory";
-      this.addNewCategory.Size = new System.Drawing.Size(49, 13);
-      this.addNewCategory.TabIndex = 6;
-      this.addNewCategory.Text = "Add new";
-      this.addNewCategory.Click += new System.EventHandler(this.addNewCategory_Click);
       // 
       // descriptionInput
       // 
@@ -179,7 +160,7 @@ namespace ExpenseMonitor
       this.groupBox2.Controls.Add(this.startDateLabel);
       this.groupBox2.Controls.Add(this.startDatePicker);
       this.groupBox2.Controls.Add(this.recordsTable);
-      this.groupBox2.Location = new System.Drawing.Point(25, 298);
+      this.groupBox2.Location = new System.Drawing.Point(12, 198);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Size = new System.Drawing.Size(614, 291);
       this.groupBox2.TabIndex = 1;
@@ -257,9 +238,9 @@ namespace ExpenseMonitor
       // fixedEntryGroup
       // 
       this.fixedEntryGroup.Controls.Add(this.addFixedEntryButton);
-      this.fixedEntryGroup.Location = new System.Drawing.Point(25, 215);
+      this.fixedEntryGroup.Location = new System.Drawing.Point(338, 12);
       this.fixedEntryGroup.Name = "fixedEntryGroup";
-      this.fixedEntryGroup.Size = new System.Drawing.Size(614, 77);
+      this.fixedEntryGroup.Size = new System.Drawing.Size(288, 92);
       this.fixedEntryGroup.TabIndex = 2;
       this.fixedEntryGroup.TabStop = false;
       this.fixedEntryGroup.Text = "Add Fixed Entry";
@@ -276,7 +257,7 @@ namespace ExpenseMonitor
       // 
       // removeSelectedEntry
       // 
-      this.removeSelectedEntry.Location = new System.Drawing.Point(31, 596);
+      this.removeSelectedEntry.Location = new System.Drawing.Point(12, 495);
       this.removeSelectedEntry.Name = "removeSelectedEntry";
       this.removeSelectedEntry.Size = new System.Drawing.Size(130, 23);
       this.removeSelectedEntry.TabIndex = 3;
@@ -286,16 +267,36 @@ namespace ExpenseMonitor
       // 
       // profilingGroup
       // 
+      this.profilingGroup.Controls.Add(this.monthSelectedOutput);
+      this.profilingGroup.Controls.Add(this.monthSelectedToProfileLabel);
+      this.profilingGroup.Controls.Add(this.budgetLabel);
       this.profilingGroup.Controls.Add(this.budgetTotalOutput);
       this.profilingGroup.Controls.Add(this.totalsTable);
       this.profilingGroup.Controls.Add(this.totalsOutput);
       this.profilingGroup.Controls.Add(this.totalLabel);
-      this.profilingGroup.Location = new System.Drawing.Point(1130, 12);
+      this.profilingGroup.Location = new System.Drawing.Point(12, 524);
       this.profilingGroup.Name = "profilingGroup";
-      this.profilingGroup.Size = new System.Drawing.Size(419, 617);
+      this.profilingGroup.Size = new System.Drawing.Size(614, 253);
       this.profilingGroup.TabIndex = 4;
       this.profilingGroup.TabStop = false;
       this.profilingGroup.Text = "Profiling";
+      // 
+      // budgetLabel
+      // 
+      this.budgetLabel.AutoSize = true;
+      this.budgetLabel.Location = new System.Drawing.Point(3, 102);
+      this.budgetLabel.Name = "budgetLabel";
+      this.budgetLabel.Size = new System.Drawing.Size(41, 13);
+      this.budgetLabel.TabIndex = 10;
+      this.budgetLabel.Text = "Budget";
+      // 
+      // budgetTotalOutput
+      // 
+      this.budgetTotalOutput.Location = new System.Drawing.Point(46, 99);
+      this.budgetTotalOutput.Name = "budgetTotalOutput";
+      this.budgetTotalOutput.ReadOnly = true;
+      this.budgetTotalOutput.Size = new System.Drawing.Size(100, 20);
+      this.budgetTotalOutput.TabIndex = 3;
       // 
       // totalsTable
       // 
@@ -306,10 +307,10 @@ namespace ExpenseMonitor
       this.totalsTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.totalsCategory,
             this.totalsAmount});
-      this.totalsTable.Location = new System.Drawing.Point(23, 73);
+      this.totalsTable.Location = new System.Drawing.Point(152, 19);
       this.totalsTable.Name = "totalsTable";
       this.totalsTable.ReadOnly = true;
-      this.totalsTable.Size = new System.Drawing.Size(377, 220);
+      this.totalsTable.Size = new System.Drawing.Size(446, 220);
       this.totalsTable.TabIndex = 2;
       // 
       // totalsCategory
@@ -326,7 +327,7 @@ namespace ExpenseMonitor
       // 
       // totalsOutput
       // 
-      this.totalsOutput.Location = new System.Drawing.Point(78, 35);
+      this.totalsOutput.Location = new System.Drawing.Point(46, 73);
       this.totalsOutput.Name = "totalsOutput";
       this.totalsOutput.ReadOnly = true;
       this.totalsOutput.Size = new System.Drawing.Size(100, 20);
@@ -335,25 +336,85 @@ namespace ExpenseMonitor
       // totalLabel
       // 
       this.totalLabel.AutoSize = true;
-      this.totalLabel.Location = new System.Drawing.Point(20, 38);
+      this.totalLabel.Location = new System.Drawing.Point(3, 76);
       this.totalLabel.Name = "totalLabel";
       this.totalLabel.Size = new System.Drawing.Size(34, 13);
       this.totalLabel.TabIndex = 0;
       this.totalLabel.Text = "Total:";
       // 
-      // budgetTotalOutput
+      // categoryManagerGroup
       // 
-      this.budgetTotalOutput.Location = new System.Drawing.Point(184, 35);
-      this.budgetTotalOutput.Name = "budgetTotalOutput";
-      this.budgetTotalOutput.ReadOnly = true;
-      this.budgetTotalOutput.Size = new System.Drawing.Size(100, 20);
-      this.budgetTotalOutput.TabIndex = 3;
+      this.categoryManagerGroup.Controls.Add(this.updateExistingCategoryBudget);
+      this.categoryManagerGroup.Controls.Add(this.addNewCategory);
+      this.categoryManagerGroup.Location = new System.Drawing.Point(338, 108);
+      this.categoryManagerGroup.Name = "categoryManagerGroup";
+      this.categoryManagerGroup.Size = new System.Drawing.Size(288, 84);
+      this.categoryManagerGroup.TabIndex = 9;
+      this.categoryManagerGroup.TabStop = false;
+      this.categoryManagerGroup.Text = "Category Manager";
+      // 
+      // updateExistingCategoryBudget
+      // 
+      this.updateExistingCategoryBudget.Location = new System.Drawing.Point(142, 19);
+      this.updateExistingCategoryBudget.Name = "updateExistingCategoryBudget";
+      this.updateExistingCategoryBudget.Size = new System.Drawing.Size(130, 46);
+      this.updateExistingCategoryBudget.TabIndex = 1;
+      this.updateExistingCategoryBudget.Text = "Update Existing Category Budget";
+      this.updateExistingCategoryBudget.UseVisualStyleBackColor = true;
+      this.updateExistingCategoryBudget.Click += new System.EventHandler(this.updateExistingBudget_Click);
+      // 
+      // addNewCategory
+      // 
+      this.addNewCategory.Location = new System.Drawing.Point(20, 19);
+      this.addNewCategory.Name = "addNewCategory";
+      this.addNewCategory.Size = new System.Drawing.Size(116, 46);
+      this.addNewCategory.TabIndex = 0;
+      this.addNewCategory.Text = "Add New Category";
+      this.addNewCategory.UseVisualStyleBackColor = true;
+      this.addNewCategory.Click += new System.EventHandler(this.addNewBudget_Click);
+      // 
+      // maximumGraphYValueLabel
+      // 
+      this.maximumGraphYValueLabel.AutoSize = true;
+      this.maximumGraphYValueLabel.Location = new System.Drawing.Point(1086, 15);
+      this.maximumGraphYValueLabel.Name = "maximumGraphYValueLabel";
+      this.maximumGraphYValueLabel.Size = new System.Drawing.Size(54, 13);
+      this.maximumGraphYValueLabel.TabIndex = 10;
+      this.maximumGraphYValueLabel.Text = "Maximum:";
+      // 
+      // maximumGraphYValueInput
+      // 
+      this.maximumGraphYValueInput.Location = new System.Drawing.Point(1146, 12);
+      this.maximumGraphYValueInput.Name = "maximumGraphYValueInput";
+      this.maximumGraphYValueInput.Size = new System.Drawing.Size(100, 20);
+      this.maximumGraphYValueInput.TabIndex = 11;
+      this.maximumGraphYValueInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.maximumGraphYValueInput_Submit);
+      // 
+      // monthSelectedToProfileLabel
+      // 
+      this.monthSelectedToProfileLabel.AutoSize = true;
+      this.monthSelectedToProfileLabel.Location = new System.Drawing.Point(3, 34);
+      this.monthSelectedToProfileLabel.Name = "monthSelectedToProfileLabel";
+      this.monthSelectedToProfileLabel.Size = new System.Drawing.Size(37, 13);
+      this.monthSelectedToProfileLabel.TabIndex = 12;
+      this.monthSelectedToProfileLabel.Text = "Month";
+      // 
+      // monthSelectedOutput
+      // 
+      this.monthSelectedOutput.Location = new System.Drawing.Point(46, 31);
+      this.monthSelectedOutput.Name = "monthSelectedOutput";
+      this.monthSelectedOutput.ReadOnly = true;
+      this.monthSelectedOutput.Size = new System.Drawing.Size(100, 20);
+      this.monthSelectedOutput.TabIndex = 12;
       // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1557, 641);
+      this.ClientSize = new System.Drawing.Size(1258, 789);
+      this.Controls.Add(this.maximumGraphYValueInput);
+      this.Controls.Add(this.maximumGraphYValueLabel);
+      this.Controls.Add(this.categoryManagerGroup);
       this.Controls.Add(this.profilingGroup);
       this.Controls.Add(this.removeSelectedEntry);
       this.Controls.Add(this.fixedEntryGroup);
@@ -370,6 +431,7 @@ namespace ExpenseMonitor
       this.profilingGroup.ResumeLayout(false);
       this.profilingGroup.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.totalsTable)).EndInit();
+      this.categoryManagerGroup.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -378,7 +440,6 @@ namespace ExpenseMonitor
     #endregion
 
     private System.Windows.Forms.GroupBox manualEntryGroup;
-    private System.Windows.Forms.Label addNewCategory;
     private System.Windows.Forms.TextBox descriptionInput;
     private System.Windows.Forms.Label description;
     private System.Windows.Forms.TextBox amountInput;
@@ -396,7 +457,6 @@ namespace ExpenseMonitor
     private DateTimePicker startDatePicker;
     private Label endDateLabel;
     private DateTimePicker endDatePicker;
-    private Label changeBudget;
     private GroupBox fixedEntryGroup;
     private Button addFixedEntryButton;
     private Button removeSelectedEntry;
@@ -407,6 +467,14 @@ namespace ExpenseMonitor
     private DataGridViewTextBoxColumn totalsCategory;
     private DataGridViewTextBoxColumn totalsAmount;
     private TextBox budgetTotalOutput;
+    private GroupBox categoryManagerGroup;
+    private Button updateExistingCategoryBudget;
+    private Button addNewCategory;
+    private Label budgetLabel;
+    private Label maximumGraphYValueLabel;
+    private TextBox maximumGraphYValueInput;
+    private Label monthSelectedToProfileLabel;
+    private TextBox monthSelectedOutput;
   }
 }
 

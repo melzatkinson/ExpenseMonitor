@@ -9,10 +9,10 @@ namespace ExpenseMonitor
 {
   public partial class MainForm : Form
   {
-    private readonly AddNewCategoryForm _addNewCategoryForm;
-    private readonly ChangeCategoryBudgetForm _changeCategoryBudgetForm;
-    private readonly AddFixedEntryForm _addFixedEntryForm;
-    private readonly BarGraph _barGraph;
+    private AddNewCategoryForm _addNewCategoryForm;
+    private ChangeCategoryBudgetForm _changeCategoryBudgetForm;
+    private AddFixedEntryForm _addFixedEntryForm;
+    private BarGraph _barGraph;
 
     private readonly AppManager _appManager;
 
@@ -21,28 +21,52 @@ namespace ExpenseMonitor
     public MainForm( AppManager appManager )
     {
       _appManager = appManager;
-      _addNewCategoryForm = new AddNewCategoryForm( _appManager );
-      _changeCategoryBudgetForm = new ChangeCategoryBudgetForm( _appManager );
-      _addFixedEntryForm = new AddFixedEntryForm( _appManager );
-      _barGraph = new BarGraph( _appManager );
 
-      _appManager.CategoryManager.CategoriesChanged += OnCategoriesChanged;
-      _appManager.ManualEntryManager.ManualEntriesChanged += OnManualEntriesChanged;
-      Paint += _barGraph.DrawGraph;
+      InitialiseForms();
+      SetupEvents();
 
       InitializeComponent();
 
+      InitialiseMainForm();
+    }
+
+    //-------------------------------------------------------------------------
+
+    private void InitialiseMainForm()
+    {
       RefreshCategoriesComboBox( _appManager.CategoryManager );
 
       if( existingCategories.Items.Count > 0 )
         existingCategories.SelectedIndex = 0;
 
-      RefreshForm();
-
       DateTime threeMonthsAgo = DateTime.Now.AddMonths( -3 );
       startDatePicker.Value = threeMonthsAgo;
+
+      maximumGraphYValueInput.Text = Convert.ToString( _barGraph.MaximumAmount );
+      monthSelectedOutput.Text = endDatePicker.Value.ToString( "MMMM" ) + " " + endDatePicker.Value.Date.Year;
+
+      RefreshForm();
     }
 
+    //-------------------------------------------------------------------------
+
+    private void InitialiseForms()
+    {
+      _addNewCategoryForm = new AddNewCategoryForm( _appManager );
+      _changeCategoryBudgetForm = new ChangeCategoryBudgetForm( _appManager );
+      _addFixedEntryForm = new AddFixedEntryForm( _appManager );
+      _barGraph = new BarGraph( _appManager );
+    }
+
+    //-------------------------------------------------------------------------
+
+    private void SetupEvents()
+    {
+      _appManager.CategoryManager.CategoriesChanged += OnCategoriesChanged;
+      _appManager.ManualEntryManager.ManualEntriesChanged += OnManualEntriesChanged;
+      _changeCategoryBudgetForm.BudgetChanged += OnBudgetChanged;
+      Paint += _barGraph.DrawGraph;
+    }
 
     //-------------------------------------------------------------------------
 
@@ -91,6 +115,13 @@ namespace ExpenseMonitor
 
     //-------------------------------------------------------------------------
 
+    public void OnBudgetChanged( object source, EventArgs e )
+    {
+      RefreshForm();
+    }
+
+    //-------------------------------------------------------------------------
+
     private void RefreshCategoriesComboBox( CategoryManager categoryManager )
     {
       existingCategories.Items.Clear();
@@ -116,17 +147,13 @@ namespace ExpenseMonitor
     {
       recordsTable.Rows.Clear();
 
-      foreach( var entry in _appManager.ManualEntryManager.Entries )
+      foreach( var entry in _appManager.ManualEntryManager.FilterByDate( startDatePicker.Value.Date, endDatePicker.Value.Date ) )
       {
-        if( DateTime.Compare( startDatePicker.Value.Date, entry.Date ) <= 0 &&
-            DateTime.Compare( endDatePicker.Value.Date, entry.Date ) >= 0 )
-        {
-          var index = recordsTable.Rows.Add();
-          recordsTable.Rows[ index ].Cells[ "EntryCategory" ].Value = entry.Category;
-          recordsTable.Rows[ index ].Cells[ "EntryAmount" ].Value = entry.Amount;
-          recordsTable.Rows[ index ].Cells[ "EntryDate" ].Value = entry.Date.ToString( "dd/MM/yyyy" ); ;
-          recordsTable.Rows[ index ].Cells[ "EntryDescription" ].Value = entry.Description;
-        }
+        var index = recordsTable.Rows.Add();
+        recordsTable.Rows[ index ].Cells[ "EntryCategory" ].Value = entry.Category;
+        recordsTable.Rows[ index ].Cells[ "EntryAmount" ].Value = entry.Amount;
+        recordsTable.Rows[ index ].Cells[ "EntryDate" ].Value = entry.Date.ToString( "dd/MM/yyyy" ); ;
+        recordsTable.Rows[ index ].Cells[ "EntryDescription" ].Value = entry.Description;
       }
     }
 
@@ -180,6 +207,7 @@ namespace ExpenseMonitor
     private void endDatePicker_ValueChanged( object sender, EventArgs e )
     {
       RefreshForm();
+      monthSelectedOutput.Text = endDatePicker.Value.ToString( "MMMM" ) + " " + endDatePicker.Value.Date.Year;
     }
 
     //-------------------------------------------------------------------------
@@ -205,6 +233,31 @@ namespace ExpenseMonitor
     public DateTime GetSelectedEndDate()
     {
       return endDatePicker.Value.Date;
+    }
+
+    //-------------------------------------------------------------------------
+
+    private void addNewBudget_Click( object sender, EventArgs e )
+    {
+      _addNewCategoryForm.ShowDialog( this );
+    }
+
+    //-------------------------------------------------------------------------
+
+    private void updateExistingBudget_Click( object sender, EventArgs e )
+    {
+      _changeCategoryBudgetForm.ShowDialog( this );
+    }
+
+    //-------------------------------------------------------------------------
+
+    private void maximumGraphYValueInput_Submit( object sender, KeyEventArgs e )
+    {
+      if( e.KeyCode != Keys.Enter )
+        return;
+
+      _barGraph.MaximumAmount = Convert.ToInt32( maximumGraphYValueInput.Text );
+      Invalidate();
     }
 
     //-------------------------------------------------------------------------

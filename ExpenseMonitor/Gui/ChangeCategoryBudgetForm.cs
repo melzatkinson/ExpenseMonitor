@@ -9,6 +9,9 @@ namespace ExpenseMonitor.Gui
   {
     private readonly AppManager _appManager;
 
+    public delegate void BudgetChangedEventHandler( object source, EventArgs args );
+    public event BudgetChangedEventHandler BudgetChanged;
+
     //-------------------------------------------------------------------------
 
     public ChangeCategoryBudgetForm( AppManager appManager )
@@ -29,7 +32,9 @@ namespace ExpenseMonitor.Gui
       _appManager.CategoryManager.UpdateCategoryBudget( categoryInput.SelectedItem.ToString(), double.Parse( newBudgetInput.Text, CultureInfo.InvariantCulture ) );
       newBudgetInput.Text = "";
 
-      this.Close();
+      OnBudgetChanged();
+
+      Close();
     }
 
     //-------------------------------------------------------------------------
@@ -51,7 +56,14 @@ namespace ExpenseMonitor.Gui
 
     private void categoryInput_SelectedIndexChanged( object sender, EventArgs e )
     {
-      newBudgetInput.Text = Convert.ToString(_appManager.CategoryManager.GetBudgetFromName(categoryInput.Text), CultureInfo.InvariantCulture);
+      newBudgetInput.Text = Convert.ToString( _appManager.CategoryManager.GetBudgetFromName( categoryInput.Text ), CultureInfo.InvariantCulture );
+    }
+
+    //-------------------------------------------------------------------------
+
+    protected virtual void OnBudgetChanged()
+    {
+      BudgetChanged?.Invoke( this, EventArgs.Empty );
     }
 
     //-------------------------------------------------------------------------

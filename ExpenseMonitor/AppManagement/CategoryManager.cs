@@ -26,17 +26,17 @@ namespace ExpenseMonitor
 
     //-------------------------------------------------------------------------
 
-    public void AddCategory( string categoryName, double amount )
+    public bool AddCategory( string categoryName, double amount )
     {
       if( _categoryInfos.ContainsKey( categoryName ) || categoryName == "" )
       {
-        MessageBox.Show( "Invalid! Empty or duplicate." );
+        return false;
       }
-      else
-      {
-        _categoryInfos.Add( categoryName, amount );
-        OnCategoriesChanged();
-      }
+
+      _categoryInfos.Add( categoryName, amount );
+      OnCategoriesChanged();
+
+      return true;
     }
 
     //-------------------------------------------------------------------------
