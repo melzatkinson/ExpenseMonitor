@@ -46,13 +46,18 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
     <Compile Include="CategoryManagerTests.cs" />
+    <Compile Include="CategoryManagerTestMock.cs" />
+    <Compile Include="ManualEntryManagerTestMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ManualEntryManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExpenseMonitor\ExpenseMonitor.csproj">

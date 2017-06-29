@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Windows.Forms;
+using System.Linq;
 using System.Xml;
 
-namespace ExpenseMonitor
+namespace ExpenseMonitor.AppManagement
 {
   public class ManualEntryManager
   {
@@ -17,7 +16,7 @@ namespace ExpenseMonitor
       public string Description;
     }
 
-    private List<Entry> _entries = new List<Entry>();
+    private readonly List<Entry> _entries = new List<Entry>();
     public List<Entry> Entries => _entries;
 
     public delegate void ManualEntriesChangedEventHandler( object source, EventArgs args );
@@ -29,11 +28,13 @@ namespace ExpenseMonitor
     {
       foreach( var entryXml in xmlList )
       {
-        Entry newEntry = new Entry();
-        newEntry.Date = DateTime.ParseExact( entryXml.GetAttribute( "date" ), "dd/MM/yyyy", CultureInfo.InvariantCulture );
-        newEntry.Category = entryXml.GetAttribute( "category" );
-        newEntry.Amount = double.Parse( entryXml.GetAttribute( "amount" ), CultureInfo.InvariantCulture );
-        newEntry.Description = entryXml.GetAttribute( "description" );
+        var newEntry = new Entry
+        {
+          Date = DateTime.ParseExact( entryXml.GetAttribute( "date" ), "dd/MM/yyyy", CultureInfo.InvariantCulture ),
+          Category = entryXml.GetAttribute( "category" ),
+          Amount = double.Parse( entryXml.GetAttribute( "amount" ), CultureInfo.InvariantCulture ),
+          Description = entryXml.GetAttribute( "description" )
+        };
 
         _entries.Add( newEntry );
       }
@@ -43,11 +44,13 @@ namespace ExpenseMonitor
 
     public void Add( DateTime date, string category, double amount, string description )
     {
-      Entry newEntry = new Entry();
-      newEntry.Date = date;
-      newEntry.Category = category;
-      newEntry.Amount = amount;
-      newEntry.Description = description;
+      var newEntry = new Entry
+      {
+        Date = date,
+        Category = category,
+        Amount = amount,
+        Description = description
+      };
 
       _entries.Add( newEntry );
 
@@ -74,58 +77,35 @@ namespace ExpenseMonitor
 
     public int GetTotalAmountForCategory( string categoryName, DateTime startDate, DateTime endDate )
     {
-      double total = 0.0;
-
-      foreach( var entry in FilterByDate( startDate, endDate ) )
-        if( entry.Category == categoryName )
-          total += entry.Amount;
-
-      return ( int )total;
+      return ( int )FilterByDate( startDate, endDate ).Where( entry => entry.Category == categoryName ).Sum( entry => entry.Amount );
     }
 
     //-------------------------------------------------------------------------
 
     public int GetTotalAmountForMonth( DateTime date )
     {
-      double total = 0.0;
-
-      foreach( var entry in FilterByMonth( date ) )
-        total += entry.Amount;
-
-      return ( int )total;
+      return ( int )FilterByMonth( date ).Sum( entry => entry.Amount );
     }
 
     //-------------------------------------------------------------------------
 
     public int GetTotalAmountForCategoryInMonth( string categoryName, DateTime date )
     {
-      double total = 0.0;
-
-      foreach( var entry in FilterByMonth( date ) )
-        if( entry.Category == categoryName )
-          total += entry.Amount;
-
-      return ( int )total;
+      return ( int )FilterByMonth( date ).Where( entry => entry.Category == categoryName ).Sum( entry => entry.Amount );
     }
 
     //-------------------------------------------------------------------------
 
     public IEnumerable<Entry> FilterByMonth( DateTime date )
     {
-      foreach( var entry in _entries )
-        if( entry.Date.Month == date.Month &&
-            entry.Date.Year == date.Year )
-          yield return entry;
+      return _entries.Where( entry => entry.Date.Month == date.Month && entry.Date.Year == date.Year );
     }
 
     //-------------------------------------------------------------------------
 
     public IEnumerable<Entry> FilterByDate( DateTime startDate, DateTime endDate )
     {
-      foreach( var entry in _entries )
-        if( DateTime.Compare( startDate, entry.Date ) <= 0 &&
-            DateTime.Compare( endDate, entry.Date ) >= 0 )
-          yield return entry;
+      return _entries.Where( entry => DateTime.Compare( startDate, entry.Date ) <= 0 && DateTime.Compare( endDate, entry.Date ) >= 0 );
     }
 
     //-------------------------------------------------------------------------

@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Windows.Forms;
+using System.Linq;
 using System.Xml;
 
-namespace ExpenseMonitor
+namespace ExpenseMonitor.AppManagement
 {
   public class CategoryManager
   {
-    private Dictionary<string, double> _categoryInfos = new Dictionary<string, double>();
+    private readonly Dictionary<string, double> _categoryInfos = new Dictionary<string, double>();
     public Dictionary<string, double> CategoryInfos => _categoryInfos;
 
     public delegate void CategoriesChangedEventHandler( object source, EventArgs args );
@@ -19,9 +19,9 @@ namespace ExpenseMonitor
     public void Initialise( List<XmlElement> xmlList )
     {
       foreach( var category in xmlList )
-      {
-        _categoryInfos.Add( category.GetAttribute( "name" ), double.Parse( category.GetAttribute( "budget" ), CultureInfo.InvariantCulture ) );
-      }
+        _categoryInfos.Add( category.GetAttribute( "name" ), 
+                            double.Parse( category.GetAttribute( "budget" ), 
+                            CultureInfo.InvariantCulture ) );
     }
 
     //-------------------------------------------------------------------------
@@ -29,9 +29,7 @@ namespace ExpenseMonitor
     public bool AddCategory( string categoryName, double amount )
     {
       if( _categoryInfos.ContainsKey( categoryName ) || categoryName == "" )
-      {
         return false;
-      }
 
       _categoryInfos.Add( categoryName, amount );
       OnCategoriesChanged();
@@ -67,14 +65,7 @@ namespace ExpenseMonitor
 
     public double GetTotalBudgetAmount()
     {
-      double total = 0;
-
-      foreach( var amount in _categoryInfos.Values )
-      {
-        total += amount;
-      }
-
-      return total;
+      return _categoryInfos.Values.Sum();
     }
 
     //-------------------------------------------------------------------------

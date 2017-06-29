@@ -1,51 +1,37 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Xml;
-using ExpenseMonitor;
+using ExpenseMonitor.AppManagement;
+
+//-------------------------------------------------------------------------
 
 namespace ExpenseMonitorTests
 {
-  public class Mock
-  {
-    public bool CategoriesChanged { get; set; } = false;
-
-    public Mock( CategoryManager categoryManager )
-    {
-      categoryManager.CategoriesChanged += OnCategoriesChanged;
-    }
-
-    public void OnCategoriesChanged( object source, EventArgs e )
-    {
-      CategoriesChanged = true;
-    }
-  }
-
   //-------------------------------------------------------------------------
 
   [TestClass]
   public class CategoryManagerTests
   {
-    public CategoryManager GenerateManagerWithCategories()
+    private readonly CategoryManager _categoryManager = GenerateManagerWithCategories();
+
+    //-------------------------------------------------------------------------
+
+    public static CategoryManager GenerateManagerWithCategories()
     {
       XmlDocument doc = new XmlDocument();
 
-      XmlElement element1 = doc.CreateElement( "category" );
+      var element1 = doc.CreateElement( "category" );
       element1.SetAttribute( "name", "test1" );
       element1.SetAttribute( "budget", "100" );
 
-      XmlElement element2 = doc.CreateElement( "category" );
+      var element2 = doc.CreateElement( "category" );
       element2.SetAttribute( "name", "test2" );
       element2.SetAttribute( "budget", "1000" );
 
-      List<XmlElement> list = new List<XmlElement>();
-      list.Add( element1 );
-      list.Add( element2 );
+      var list = new List<XmlElement> { element1, element2 };
 
-      CategoryManager categorymanager = new CategoryManager();
+      var categorymanager = new CategoryManager();
 
       categorymanager.Initialise( list );
 
@@ -57,22 +43,12 @@ namespace ExpenseMonitorTests
     [TestMethod]
     public void Initialise_UpdatesCategoryList()
     {
-      // Arrange and act
-      var categorymanager = GenerateManagerWithCategories();
+      var expectedNames = new List<string> { "test1", "test2" };
+      var expectedBudgets = new List<double> { 100, 1000 };
 
-      // Assert
-      var expectedNames = new List<string>();
-      var expectedBudgets = new List<double>();
+      var index = 0;
 
-      expectedNames.Add( "test1" );
-      expectedNames.Add( "test2" );
-
-      expectedBudgets.Add( 100 );
-      expectedBudgets.Add( 1000 );
-
-      int index = 0;
-
-      foreach( var categoryInfo in categorymanager.CategoryInfos )
+      foreach( var categoryInfo in _categoryManager.CategoryInfos )
       {
         Assert.AreEqual( expectedNames[ index ], categoryInfo.Key );
         Assert.AreEqual( expectedBudgets[ index ], categoryInfo.Value );
@@ -87,17 +63,15 @@ namespace ExpenseMonitorTests
     public void AddCategory_WithCorrectNewName()
     {
       // Arrange
-      string categoryNameToAdd = "newCategoryAdded";
-      double budgetToAdd = 13;
-
-      var categoryManager = GenerateManagerWithCategories();
+      var categoryNameToAdd = "newCategoryAdded";
+      var budgetToAdd = 13;
 
       // Act
-      categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
+      _categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
 
       // Assert
-      Assert.AreEqual( categoryNameToAdd, categoryManager.CategoryInfos.Last().Key );
-      Assert.AreEqual( budgetToAdd, categoryManager.CategoryInfos.Last().Value );
+      Assert.AreEqual( categoryNameToAdd, _categoryManager.CategoryInfos.Last().Key );
+      Assert.AreEqual( budgetToAdd, _categoryManager.CategoryInfos.Last().Value );
     }
 
     //-------------------------------------------------------------------------
@@ -106,18 +80,16 @@ namespace ExpenseMonitorTests
     public void AddCategory_WithDuplicateNewName()
     {
       // Arrange
-      string categoryNameToAdd = "test1";
-      double budgetToAdd = 13;
+      var categoryNameToAdd = _categoryManager.CategoryInfos.First().Key;
+      var budgetToAdd = 13;
 
-      var categoryManager = GenerateManagerWithCategories();
-
-      string lastAddedCategory = categoryManager.CategoryInfos.Last().Key;
+      var lastAddedCategory = _categoryManager.CategoryInfos.Last().Key;
 
       // Act
-      categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
+      _categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
 
       // Assert
-      Assert.AreEqual( lastAddedCategory, categoryManager.CategoryInfos.Last().Key );
+      Assert.AreEqual( lastAddedCategory, _categoryManager.CategoryInfos.Last().Key );
     }
 
     //-------------------------------------------------------------------------
@@ -126,18 +98,16 @@ namespace ExpenseMonitorTests
     public void AddCategory_WithEmptyNewName()
     {
       // Arrange
-      string categoryNameToAdd = "";
-      double budgetToAdd = 13;
+      var categoryNameToAdd = "";
+      var budgetToAdd = 13;
 
-      var categoryManager = GenerateManagerWithCategories();
-
-      string lastAddedCategory = categoryManager.CategoryInfos.Last().Key;
+      var lastAddedCategory = _categoryManager.CategoryInfos.Last().Key;
 
       // Act
-      categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
+      _categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
 
       // Assert
-      Assert.AreEqual( lastAddedCategory, categoryManager.CategoryInfos.Last().Key );
+      Assert.AreEqual( lastAddedCategory, _categoryManager.CategoryInfos.Last().Key );
     }
 
     //-------------------------------------------------------------------------
@@ -146,17 +116,15 @@ namespace ExpenseMonitorTests
     public void UpdateCategoryBudget_UpdatesBudget()
     {
       // Arrange
-      string categoryNameToUpdate = "test1";
-      double budgetToUpdateTo = 20;
-
-      var categoryManager = GenerateManagerWithCategories();
+      var categoryNameToUpdate = _categoryManager.CategoryInfos.First().Key;
+      var budgetToUpdateTo = 20;
 
       // Act
-      categoryManager.UpdateCategoryBudget( categoryNameToUpdate, budgetToUpdateTo );
+      _categoryManager.UpdateCategoryBudget( categoryNameToUpdate, budgetToUpdateTo );
 
       // Assert
       double actual;
-      categoryManager.CategoryInfos.TryGetValue( categoryNameToUpdate, out actual );
+      _categoryManager.CategoryInfos.TryGetValue( categoryNameToUpdate, out actual );
 
       Assert.AreEqual( budgetToUpdateTo, actual );
     }
@@ -167,15 +135,14 @@ namespace ExpenseMonitorTests
     public void GetBudgetFromName_CorrectBudgetValue()
     {
       // Arrange
-      string categoryToTest = "test1";
-
-      var categoryManager = GenerateManagerWithCategories();
+      var categoryToTest = _categoryManager.CategoryInfos.First().Key;
 
       // Act
-      double actual = categoryManager.GetBudgetFromName( categoryToTest );
+      var actual = _categoryManager.GetBudgetFromName( categoryToTest );
 
       // Assert
-      Assert.AreEqual( 100, actual );
+      var expected = _categoryManager.CategoryInfos.First().Value;
+      Assert.AreEqual( expected, actual );
     }
 
     //-------------------------------------------------------------------------
@@ -183,14 +150,13 @@ namespace ExpenseMonitorTests
     [TestMethod]
     public void GetTotalBudget_CorrectAmount()
     {
-      // Arrange
-      var categoryManager = GenerateManagerWithCategories();
-
       // Act
-      double actual = categoryManager.GetTotalBudgetAmount();
+      var actual = _categoryManager.GetTotalBudgetAmount();
 
       // Assert
-      Assert.AreEqual( 1100, actual );
+      var total = _categoryManager.CategoryInfos.Values.Sum();
+   
+      Assert.AreEqual( total, actual );
     }
 
     //-------------------------------------------------------------------------
@@ -199,13 +165,10 @@ namespace ExpenseMonitorTests
     public void AddCategory_InvokesEvent()
     {
       // Arrange
-      var categoryManager = GenerateManagerWithCategories();
-      Mock mock = new Mock( categoryManager );
-
-      string lastAddedCategory = categoryManager.CategoryInfos.Last().Key;
-
+      var mock = new CategoryManagerTestMock( _categoryManager );
+      
       // Act
-      categoryManager.AddCategory( "something", 10 );
+      _categoryManager.AddCategory( "something", 10 );
 
       // Assert
       Assert.AreEqual( true, mock.CategoriesChanged );
