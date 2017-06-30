@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ExpenseMonitor;
 using ExpenseMonitor.AppManagement;
+using ExpenseMonitor.AppManagement.EntryFiltering.Specifications;
 
 public class BarGraph
 {
@@ -51,7 +52,7 @@ public class BarGraph
 
     _startPoint = new Point( 700, 700 );
     _barWidth = GraphWidth / ( ( double )_appManager.CategoryManager.CategoryInfos.Count * 3 );
-    _scale = (double) GraphHeight / _maximumAmount;
+    _scale = ( double )GraphHeight / _maximumAmount;
 
     DrawAxes();
     AddYAxisLabeling();
@@ -83,7 +84,13 @@ public class BarGraph
 
   private void DrawActualBar( KeyValuePair<string, double> category, DateTime startDate, DateTime endDate )
   {
-    int total = _appManager.ManualEntryManager.GetTotalAmountForCategory( category.Key, startDate, endDate );
+    var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+    {
+      new EntryDateSpecification(startDate, endDate),
+      new EntryCategorySpecification(category.Key)
+    };
+
+    int total = _appManager.ManualEntryManager.GetTotal( specifications );
 
     Size size = new Size( ( int )_barWidth, ( int )( total * _scale ) );
     int y = _startPoint.Y - ( int )( total * _scale );

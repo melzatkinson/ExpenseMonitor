@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using ExpenseMonitor.AppManagement;
+using ExpenseMonitor.AppManagement.EntryFiltering;
+using ExpenseMonitor.AppManagement.EntryFiltering.Specifications;
 using ExpenseMonitor.Gui;
 
 namespace ExpenseMonitor
@@ -13,6 +16,8 @@ namespace ExpenseMonitor
     private ChangeCategoryBudgetForm _changeCategoryBudgetForm;
     private AddFixedEntryForm _addFixedEntryForm;
     private BarGraph _barGraph;
+
+    private readonly EntryFilter _entryFilter = new EntryFilter();
 
     private readonly AppManager _appManager;
 
@@ -147,7 +152,7 @@ namespace ExpenseMonitor
     {
       recordsTable.Rows.Clear();
 
-      foreach( var entry in _appManager.ManualEntryManager.FilterByDate( startDatePicker.Value.Date, endDatePicker.Value.Date ) )
+      foreach( var entry in _entryFilter.Filter( _appManager.ManualEntryManager.Entries, new EntryDateSpecification( startDatePicker.Value.Date, endDatePicker.Value.Date ) ) )
       {
         var index = recordsTable.Rows.Add();
         recordsTable.Rows[ index ].Cells[ "EntryCategory" ].Value = entry.Category;
@@ -161,7 +166,7 @@ namespace ExpenseMonitor
 
     private void RefreshProfilingInformation()
     {
-      double totalExpenditure = _appManager.ManualEntryManager.GetTotalAmountForMonth( endDatePicker.Value.Date );
+      double totalExpenditure = _appManager.ManualEntryManager.GetTotal( new List<ISpecification<ManualEntryManager.Entry>>() { new EntryMonthSpecification( endDatePicker.Value.Date ) } );
       double totalBudget = _appManager.CategoryManager.GetTotalBudgetAmount();
 
       totalsOutput.Text = Convert.ToString( totalExpenditure, CultureInfo.InvariantCulture );
@@ -173,9 +178,15 @@ namespace ExpenseMonitor
 
       foreach( var category in _appManager.CategoryManager.CategoryInfos.Keys )
       {
+        var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+        {
+          new EntryMonthSpecification(endDatePicker.Value.Date),
+          new EntryCategorySpecification(category)
+        };
+
         var index = totalsTable.Rows.Add();
         totalsTable.Rows[ index ].Cells[ "totalsCategory" ].Value = category;
-        totalsTable.Rows[ index ].Cells[ "totalsAmount" ].Value = _appManager.ManualEntryManager.GetTotalAmountForCategoryInMonth( category, endDatePicker.Value.Date );
+        totalsTable.Rows[ index ].Cells[ "totalsAmount" ].Value = _appManager.ManualEntryManager.GetTotal( specifications );
       }
     }
 

@@ -48,6 +48,12 @@
   <ItemGroup>
     <Compile Include="AppManagement\AppManager.cs" />
     <Compile Include="AppManagement\CategoryManager.cs" />
+    <Compile Include="AppManagement\EntryFiltering\EntryFilter.cs" />
+    <Compile Include="AppManagement\EntryFiltering\Specifications\EntryCategorySpecification.cs" />
+    <Compile Include="AppManagement\EntryFiltering\Specifications\EntryMonthSpecification.cs" />
+    <Compile Include="AppManagement\EntryFiltering\Specifications\EntryDateSpecification.cs" />
+    <Compile Include="AppManagement\EntryFiltering\IFilter.cs" />
+    <Compile Include="AppManagement\EntryFiltering\Specifications\ISpecification.cs" />
     <Compile Include="AppManagement\ManualEntryManager.cs" />
     <Compile Include="AppManagement\RecurringEntryManager.cs" />
     <Compile Include="Gui\BarGraph.cs" />

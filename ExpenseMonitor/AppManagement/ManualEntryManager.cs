@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
+using ExpenseMonitor.AppManagement.EntryFiltering;
+using ExpenseMonitor.AppManagement.EntryFiltering.Specifications;
 
 namespace ExpenseMonitor.AppManagement
 {
@@ -18,6 +20,8 @@ namespace ExpenseMonitor.AppManagement
 
     private readonly List<Entry> _entries = new List<Entry>();
     public List<Entry> Entries => _entries;
+
+    private readonly EntryFilter _entryFilter = new EntryFilter();
 
     public delegate void ManualEntriesChangedEventHandler( object source, EventArgs args );
     public event ManualEntriesChangedEventHandler ManualEntriesChanged;
@@ -75,37 +79,16 @@ namespace ExpenseMonitor.AppManagement
 
     //-------------------------------------------------------------------------
 
-    public int GetTotalAmountForCategory( string categoryName, DateTime startDate, DateTime endDate )
+    public int GetTotal( List<ISpecification<Entry>> specifications )
     {
-      return ( int )FilterByDate( startDate, endDate ).Where( entry => entry.Category == categoryName ).Sum( entry => entry.Amount );
-    }
+      IEnumerable<Entry> filteredEntries = _entries;
 
-    //-------------------------------------------------------------------------
+      foreach( var specification in specifications )
+      {
+        filteredEntries = _entryFilter.Filter( filteredEntries, specification );
+      }
 
-    public int GetTotalAmountForMonth( DateTime date )
-    {
-      return ( int )FilterByMonth( date ).Sum( entry => entry.Amount );
-    }
-
-    //-------------------------------------------------------------------------
-
-    public int GetTotalAmountForCategoryInMonth( string categoryName, DateTime date )
-    {
-      return ( int )FilterByMonth( date ).Where( entry => entry.Category == categoryName ).Sum( entry => entry.Amount );
-    }
-
-    //-------------------------------------------------------------------------
-
-    public IEnumerable<Entry> FilterByMonth( DateTime date )
-    {
-      return _entries.Where( entry => entry.Date.Month == date.Month && entry.Date.Year == date.Year );
-    }
-
-    //-------------------------------------------------------------------------
-
-    public IEnumerable<Entry> FilterByDate( DateTime startDate, DateTime endDate )
-    {
-      return _entries.Where( entry => DateTime.Compare( startDate, entry.Date ) <= 0 && DateTime.Compare( endDate, entry.Date ) >= 0 );
+      return ( int )filteredEntries.Sum( entry => entry.Amount );
     }
 
     //-------------------------------------------------------------------------

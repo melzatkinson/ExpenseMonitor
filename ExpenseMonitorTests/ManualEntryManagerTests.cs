@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using ExpenseMonitor.AppManagement;
+using ExpenseMonitor.AppManagement.EntryFiltering;
+using ExpenseMonitor.AppManagement.EntryFiltering.Specifications;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpenseMonitorTests
@@ -191,15 +193,21 @@ namespace ExpenseMonitorTests
       var manualEntryManager = GenerateManualEntryManager();
 
       manualEntryManager.Add( DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture ),
-        "petrol",
-        2000,
-        "testDescription" );
+                              "petrol",
+                              2000,
+                              "testDescription" );
 
       var startDate = DateTime.ParseExact( "01/01/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
       var endDate = DateTime.ParseExact( "01/01/2018", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
+      var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+      {
+        new EntryDateSpecification(startDate, endDate),
+        new EntryCategorySpecification("petrol")
+      };
+
       // Act
-      var total = manualEntryManager.GetTotalAmountForCategory( "petrol", startDate, endDate );
+      var total = manualEntryManager.GetTotal( specifications );
 
       // Assert
       Assert.AreEqual( 2500, actual: total );
@@ -214,14 +222,14 @@ namespace ExpenseMonitorTests
       var manualEntryManager = GenerateManualEntryManager();
 
       manualEntryManager.Add( DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture ),
-        "petrol",
-        2000,
-        "testDescription" );
+                              "petrol",
+                              2000,
+                              "testDescription" );
 
       var date = DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
       // Act
-      var total = manualEntryManager.GetTotalAmountForMonth( date );
+      var total = manualEntryManager.GetTotal( new List<ISpecification<ManualEntryManager.Entry>>() { new EntryMonthSpecification( date ) } );
 
       // Assert
       Assert.AreEqual( 2000, actual: total );
@@ -236,116 +244,28 @@ namespace ExpenseMonitorTests
       var manualEntryManager = GenerateManualEntryManager();
 
       manualEntryManager.Add( DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture ),
-        "petrol",
-        2000,
-        "testDescription" );
+                              "petrol",
+                              2000,
+                              "testDescription" );
 
       manualEntryManager.Add( DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture ),
-        "food",
-        3000,
-        "testDescription" );
+                              "food",
+                              3000,
+                              "testDescription" );
 
       var date = DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
+      var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+      {
+        new EntryMonthSpecification( date ),
+        new EntryCategorySpecification( "petrol" )
+      };
+
       // Act
-      var total = manualEntryManager.GetTotalAmountForCategoryInMonth( "petrol", date );
+      var total = manualEntryManager.GetTotal( specifications );
 
       // Assert
       Assert.AreEqual( 2000, actual: total );
-    }
-
-    //-------------------------------------------------------------------------
-
-    [TestMethod]
-    public void FilterByMonth_FiltersCorrectly()
-    {
-      // Arrange
-      var manualEntryManager = GenerateManualEntryManager();
-
-      var testDates = new List<DateTime>
-      {
-        DateTime.ParseExact("13/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture),
-        DateTime.ParseExact("26/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture)
-      };
-
-      var testCategories = new List<string> { "petrol", "food" };
-      var testAmounts = new List<double> { 2000, 3000 };
-      var testDescriptions = new List<string> { "testDescription1", "testDescription2" };
-
-      var index = 0;
-
-      foreach( var date in testDates )
-      {
-        manualEntryManager.Add( date,
-          testCategories[ index ],
-          testAmounts[ index ],
-          testDescriptions[ index ] );
-
-        index++;
-      }
-
-      // Act
-      var filteredEntries = manualEntryManager.FilterByMonth( DateTime.ParseExact( "01/01/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture ) );
-
-      // Assert
-      index = 0;
-      foreach( var entry in filteredEntries )
-      {
-        Assert.AreEqual( testDates[ index ], entry.Date );
-        Assert.AreEqual( testCategories[ index ], entry.Category );
-        Assert.AreEqual( testAmounts[ index ], entry.Amount );
-        Assert.AreEqual( testDescriptions[ index ], entry.Description );
-
-        index++;
-      }
-    }
-
-    //-------------------------------------------------------------------------
-
-    [TestMethod]
-    public void FilterByDate_FiltersCorrectly()
-    {
-      // Arrange
-      var manualEntryManager = GenerateManualEntryManager();
-
-      var testDates = new List<DateTime>
-      {
-        DateTime.ParseExact("13/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture),
-        DateTime.ParseExact("26/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture)
-      };
-
-      var testCategories = new List<string> { "petrol", "food" };
-      var testAmounts = new List<double> { 2000, 3000 };
-      var testDescriptions = new List<string> { "testDescription1", "testDescription2" };
-
-      var index = 0;
-
-      foreach( var date in testDates )
-      {
-        manualEntryManager.Add( date,
-                                testCategories[ index ],
-                                testAmounts[ index ],
-                                testDescriptions[ index ] );
-
-        index++;
-      }
-
-      // Act
-      var filteredEntries = manualEntryManager.FilterByDate(
-        DateTime.ParseExact( "12/01/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture ),
-        DateTime.ParseExact( "13/04/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture ) );
-
-      // Assert
-      index = 0;
-      foreach( var entry in filteredEntries )
-      {
-        Assert.AreEqual( testDates[ index ], entry.Date );
-        Assert.AreEqual( testCategories[ index ], entry.Category );
-        Assert.AreEqual( testAmounts[ index ], entry.Amount );
-        Assert.AreEqual( testDescriptions[ index ], entry.Description );
-
-        index++;
-      }
     }
 
     //-------------------------------------------------------------------------
