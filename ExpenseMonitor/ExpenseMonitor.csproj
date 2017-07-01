@@ -83,6 +83,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="AppManagement\XmlStream.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Gui\AddFixedEntryForm.resx">
       <DependentUpon>AddFixedEntryForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -95,12 +100,16 @@
     <EmbeddedResource Include="Gui\AddNewCategoryForm.resx">
       <DependentUpon>AddNewCategoryForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <None Include="Images\MainBackground.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

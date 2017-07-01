@@ -56,7 +56,6 @@
     <Compile Include="CategoryManagerTests.cs" />
     <Compile Include="CategoryManagerTestMock.cs" />
     <Compile Include="ManualEntryManagerTestMock.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ManualEntryManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +63,9 @@
       <Project>{627f4ea1-d95d-438d-a71c-795928a3e23e}</Project>
       <Name>ExpenseMonitor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

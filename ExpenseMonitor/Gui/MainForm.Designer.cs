@@ -52,6 +52,8 @@ namespace ExpenseMonitor
       this.addFixedEntryButton = new System.Windows.Forms.Button();
       this.removeSelectedEntry = new System.Windows.Forms.Button();
       this.profilingGroup = new System.Windows.Forms.GroupBox();
+      this.monthSelectedOutput = new System.Windows.Forms.TextBox();
+      this.monthSelectedToProfileLabel = new System.Windows.Forms.Label();
       this.budgetLabel = new System.Windows.Forms.Label();
       this.budgetTotalOutput = new System.Windows.Forms.TextBox();
       this.totalsTable = new System.Windows.Forms.DataGridView();
@@ -62,10 +64,6 @@ namespace ExpenseMonitor
       this.categoryManagerGroup = new System.Windows.Forms.GroupBox();
       this.updateExistingCategoryBudget = new System.Windows.Forms.Button();
       this.addNewCategory = new System.Windows.Forms.Button();
-      this.maximumGraphYValueLabel = new System.Windows.Forms.Label();
-      this.maximumGraphYValueInput = new System.Windows.Forms.TextBox();
-      this.monthSelectedToProfileLabel = new System.Windows.Forms.Label();
-      this.monthSelectedOutput = new System.Windows.Forms.TextBox();
       this.manualEntryGroup.SuspendLayout();
       this.groupBox2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.recordsTable)).BeginInit();
@@ -78,6 +76,7 @@ namespace ExpenseMonitor
       // manualEntryGroup
       // 
       this.manualEntryGroup.AutoSize = true;
+      this.manualEntryGroup.BackColor = System.Drawing.Color.Transparent;
       this.manualEntryGroup.Controls.Add(this.AddNewEntry);
       this.manualEntryGroup.Controls.Add(this.descriptionInput);
       this.manualEntryGroup.Controls.Add(this.description);
@@ -155,6 +154,7 @@ namespace ExpenseMonitor
       // groupBox2
       // 
       this.groupBox2.AutoSize = true;
+      this.groupBox2.BackColor = System.Drawing.Color.Transparent;
       this.groupBox2.Controls.Add(this.endDatePicker);
       this.groupBox2.Controls.Add(this.endDateLabel);
       this.groupBox2.Controls.Add(this.startDateLabel);
@@ -237,6 +237,7 @@ namespace ExpenseMonitor
       // 
       // fixedEntryGroup
       // 
+      this.fixedEntryGroup.BackColor = System.Drawing.Color.Transparent;
       this.fixedEntryGroup.Controls.Add(this.addFixedEntryButton);
       this.fixedEntryGroup.Location = new System.Drawing.Point(338, 12);
       this.fixedEntryGroup.Name = "fixedEntryGroup";
@@ -267,6 +268,7 @@ namespace ExpenseMonitor
       // 
       // profilingGroup
       // 
+      this.profilingGroup.BackColor = System.Drawing.Color.Transparent;
       this.profilingGroup.Controls.Add(this.monthSelectedOutput);
       this.profilingGroup.Controls.Add(this.monthSelectedToProfileLabel);
       this.profilingGroup.Controls.Add(this.budgetLabel);
@@ -280,6 +282,23 @@ namespace ExpenseMonitor
       this.profilingGroup.TabIndex = 4;
       this.profilingGroup.TabStop = false;
       this.profilingGroup.Text = "Profiling";
+      // 
+      // monthSelectedOutput
+      // 
+      this.monthSelectedOutput.Location = new System.Drawing.Point(46, 31);
+      this.monthSelectedOutput.Name = "monthSelectedOutput";
+      this.monthSelectedOutput.ReadOnly = true;
+      this.monthSelectedOutput.Size = new System.Drawing.Size(100, 20);
+      this.monthSelectedOutput.TabIndex = 12;
+      // 
+      // monthSelectedToProfileLabel
+      // 
+      this.monthSelectedToProfileLabel.AutoSize = true;
+      this.monthSelectedToProfileLabel.Location = new System.Drawing.Point(3, 34);
+      this.monthSelectedToProfileLabel.Name = "monthSelectedToProfileLabel";
+      this.monthSelectedToProfileLabel.Size = new System.Drawing.Size(37, 13);
+      this.monthSelectedToProfileLabel.TabIndex = 12;
+      this.monthSelectedToProfileLabel.Text = "Month";
       // 
       // budgetLabel
       // 
@@ -373,47 +392,13 @@ namespace ExpenseMonitor
       this.addNewCategory.UseVisualStyleBackColor = true;
       this.addNewCategory.Click += new System.EventHandler(this.addNewBudget_Click);
       // 
-      // maximumGraphYValueLabel
-      // 
-      this.maximumGraphYValueLabel.AutoSize = true;
-      this.maximumGraphYValueLabel.Location = new System.Drawing.Point(1086, 15);
-      this.maximumGraphYValueLabel.Name = "maximumGraphYValueLabel";
-      this.maximumGraphYValueLabel.Size = new System.Drawing.Size(54, 13);
-      this.maximumGraphYValueLabel.TabIndex = 10;
-      this.maximumGraphYValueLabel.Text = "Maximum:";
-      // 
-      // maximumGraphYValueInput
-      // 
-      this.maximumGraphYValueInput.Location = new System.Drawing.Point(1146, 12);
-      this.maximumGraphYValueInput.Name = "maximumGraphYValueInput";
-      this.maximumGraphYValueInput.Size = new System.Drawing.Size(100, 20);
-      this.maximumGraphYValueInput.TabIndex = 11;
-      this.maximumGraphYValueInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.maximumGraphYValueInput_Submit);
-      // 
-      // monthSelectedToProfileLabel
-      // 
-      this.monthSelectedToProfileLabel.AutoSize = true;
-      this.monthSelectedToProfileLabel.Location = new System.Drawing.Point(3, 34);
-      this.monthSelectedToProfileLabel.Name = "monthSelectedToProfileLabel";
-      this.monthSelectedToProfileLabel.Size = new System.Drawing.Size(37, 13);
-      this.monthSelectedToProfileLabel.TabIndex = 12;
-      this.monthSelectedToProfileLabel.Text = "Month";
-      // 
-      // monthSelectedOutput
-      // 
-      this.monthSelectedOutput.Location = new System.Drawing.Point(46, 31);
-      this.monthSelectedOutput.Name = "monthSelectedOutput";
-      this.monthSelectedOutput.ReadOnly = true;
-      this.monthSelectedOutput.Size = new System.Drawing.Size(100, 20);
-      this.monthSelectedOutput.TabIndex = 12;
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackgroundImage = global::ExpenseMonitor.Properties.Resources.MainBackground;
+      this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       this.ClientSize = new System.Drawing.Size(1258, 789);
-      this.Controls.Add(this.maximumGraphYValueInput);
-      this.Controls.Add(this.maximumGraphYValueLabel);
       this.Controls.Add(this.categoryManagerGroup);
       this.Controls.Add(this.profilingGroup);
       this.Controls.Add(this.removeSelectedEntry);
@@ -471,8 +456,6 @@ namespace ExpenseMonitor
     private Button updateExistingCategoryBudget;
     private Button addNewCategory;
     private Label budgetLabel;
-    private Label maximumGraphYValueLabel;
-    private TextBox maximumGraphYValueInput;
     private Label monthSelectedToProfileLabel;
     private TextBox monthSelectedOutput;
   }

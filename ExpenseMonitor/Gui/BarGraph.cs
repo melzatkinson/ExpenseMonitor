@@ -27,10 +27,13 @@ public class BarGraph
   private const int GraphHeight = 650;
   private const int GraphWidth = 550;
   private const int YaxisDelta = 500;
+  private const int SlotsPerCategory = 3;
+  private const int MinimumYAxisValueMaximum = 5000;
 
   private Point _startPoint;
   private double _barWidth;
-  private int _maximumAmount = 10000;
+  private int _maximumAmount = MinimumYAxisValueMaximum;
+  private readonly Dictionary<string, double> _categoryTotals = new Dictionary<string, double>();
   private double _scale;
 
   //-------------------------------------------------------------------------
@@ -46,64 +49,86 @@ public class BarGraph
   {
     _paintEventArgs = e;
 
-    MainForm form = ( MainForm )sender;
+    var form = ( MainForm )sender;
     if( form == null )
       return;
 
     _startPoint = new Point( 700, 700 );
-    _barWidth = GraphWidth / ( ( double )_appManager.CategoryManager.CategoryInfos.Count * 3 );
+
+    GenerateTotalsPerCategory( form );
+
+    _barWidth = GraphWidth / ( ( double )_appManager.CategoryManager.CategoryInfos.Count * SlotsPerCategory );
     _scale = ( double )GraphHeight / _maximumAmount;
 
     DrawAxes();
     AddYAxisLabeling();
 
-    foreach( var category in _appManager.CategoryManager.CategoryInfos )
+    foreach( var category in _categoryTotals )
     {
       AddXAxisLabeling( category.Key );
 
-      DrawBars( category, form );
+      double categoryBudget;
+      _appManager.CategoryManager.CategoryInfos.TryGetValue( category.Key, out categoryBudget );
+
+      DrawBars( category.Value, categoryBudget );
     }
   }
 
   //-------------------------------------------------------------------------
 
-  private void DrawBars( KeyValuePair<string, double> category, MainForm form )
+  private void GenerateTotalsPerCategory( MainForm form )
   {
-    _startPoint.X += ( int )_barWidth;
+    _categoryTotals.Clear();
+    _maximumAmount = MinimumYAxisValueMaximum;
 
-    DrawActualBar( category, form.GetSelectedStartDate(), form.GetSelectedEndDate() );
-
-    _startPoint.X += ( int )_barWidth;
-
-    DrawBudgetBar( category.Value );
-
-    _startPoint.X += ( int )_barWidth;
-  }
-
-  //-------------------------------------------------------------------------
-
-  private void DrawActualBar( KeyValuePair<string, double> category, DateTime startDate, DateTime endDate )
-  {
-    var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+    foreach( var entry in _appManager.CategoryManager.CategoryInfos )
     {
-      new EntryDateSpecification(startDate, endDate),
-      new EntryCategorySpecification(category.Key)
-    };
+      var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+      {
+        new EntryDateSpecification(form.GetSelectedStartDate(), form.GetSelectedEndDate()),
+        new EntryCategorySpecification(entry.Key)
+      };
 
-    int total = _appManager.ManualEntryManager.GetTotal( specifications );
+      var total = _appManager.ManualEntryManager.GetTotal( specifications );
+      _categoryTotals.Add( entry.Key, total );
 
-    Size size = new Size( ( int )_barWidth, ( int )( total * _scale ) );
-    int y = _startPoint.Y - ( int )( total * _scale );
-    _paintEventArgs.Graphics.FillRectangle( total > category.Value ? _redBrush : _greenBrush, new Rectangle( new Point( _startPoint.X, y ), size ) );
+      if( total > _maximumAmount ) _maximumAmount = ( int )total;
+    }
   }
 
   //-------------------------------------------------------------------------
 
-  private void DrawBudgetBar( double budget )
+  private void DrawBars( double categoryTotal, double categoryBudget )
   {
-    Size size = new Size( ( int )_barWidth, ( int )( budget * _scale ) );
-    int x = _startPoint.X;
-    int y = _startPoint.Y - ( int )( budget * _scale );
+    _startPoint.X += ( int )_barWidth;
+
+    DrawActualTotalBar( categoryTotal, categoryBudget );
+
+    _startPoint.X += ( int )_barWidth;
+
+    DrawBudgetBar( categoryBudget );
+
+    _startPoint.X += ( int )_barWidth;
+  }
+
+  //-------------------------------------------------------------------------
+
+  private void DrawActualTotalBar( double total, double categoryBudget )
+  {
+    var size = new Size( ( int )_barWidth, ( int )( total * _scale ) );
+    var y = _startPoint.Y - ( int )( total * _scale );
+
+    var brush = total > categoryBudget ? _redBrush : _greenBrush;
+    _paintEventArgs.Graphics.FillRectangle( brush, new Rectangle( new Point( _startPoint.X, y ), size ) );
+  }
+
+  //-------------------------------------------------------------------------
+
+  private void DrawBudgetBar( double categoryBudget )
+  {
+    var size = new Size( ( int )_barWidth, ( int )( categoryBudget * _scale ) );
+    var x = _startPoint.X;
+    var y = _startPoint.Y - ( int )( categoryBudget * _scale );
     _paintEventArgs.Graphics.FillRectangle( _purpleBrush, new Rectangle( new Point( x, y ), size ) );
   }
 
@@ -112,7 +137,7 @@ public class BarGraph
   private void AddXAxisLabeling( string categoryName )
   {
     _paintEventArgs.Graphics.DrawLine( _blackPen, _startPoint, new Point( _startPoint.X, _startPoint.Y + 20 ) );
-    StringFormat drawFormat = new StringFormat( StringFormatFlags.DirectionVertical );
+    var drawFormat = new StringFormat( StringFormatFlags.DirectionVertical );
 
     _paintEventArgs.Graphics.DrawString( categoryName,
                                          new Font( "Arial", 7.0f, FontStyle.Regular ),
@@ -126,25 +151,42 @@ public class BarGraph
 
   private void AddYAxisLabeling()
   {
-    double delta = _scale * YaxisDelta;
+    var delta = _scale * YaxisDelta;
     double currentYPosition = _startPoint.Y;
-    int currentLabel = 0;
+    var currentLabel = 0;
 
     while( currentLabel < _maximumAmount )
     {
       currentLabel += YaxisDelta;
       currentYPosition -= delta;
-      _paintEventArgs.Graphics.DrawLine( _blackPen, new Point( _startPoint.X, ( int )currentYPosition ), new Point( _startPoint.X - 10, ( int )currentYPosition ) );
 
-      StringFormat drawFormat = new StringFormat( StringFormatFlags.DirectionRightToLeft );
+      DrawYAxisLabelLine( currentYPosition );
 
-      _paintEventArgs.Graphics.DrawString( Convert.ToString( currentLabel ),
-                                           new Font( "Arial", 8.0f, FontStyle.Regular ),
-                                           _blackBrush,
-                                           _startPoint.X - 10,
-                                           ( int )currentYPosition - 5,
-                                           drawFormat );
+      DrawYAxisLabel( currentLabel, currentYPosition );
     }
+  }
+
+  //-------------------------------------------------------------------------
+
+  private void DrawYAxisLabelLine( double currentYPosition )
+  {
+    _paintEventArgs.Graphics.DrawLine( _blackPen,
+                                       new Point( _startPoint.X, ( int )currentYPosition ),
+                                       new Point( _startPoint.X - 10, ( int )currentYPosition ) );
+  }
+
+  //-------------------------------------------------------------------------
+
+  private void DrawYAxisLabel( int currentLabel, double currentYPosition )
+  {
+    var drawFormat = new StringFormat( StringFormatFlags.DirectionRightToLeft );
+
+    _paintEventArgs.Graphics.DrawString( Convert.ToString( currentLabel ),
+                                         new Font( "Arial", 8.0f, FontStyle.Regular ),
+                                         _blackBrush,
+                                         _startPoint.X - 10,
+                                         ( int )currentYPosition - 5,
+                                         drawFormat );
   }
 
   //-------------------------------------------------------------------------

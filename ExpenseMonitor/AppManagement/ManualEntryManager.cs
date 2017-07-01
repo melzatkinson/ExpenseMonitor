@@ -79,7 +79,7 @@ namespace ExpenseMonitor.AppManagement
 
     //-------------------------------------------------------------------------
 
-    public int GetTotal( List<ISpecification<Entry>> specifications )
+    public double GetTotal( List<ISpecification<Entry>> specifications )
     {
       IEnumerable<Entry> filteredEntries = _entries;
 
@@ -88,7 +88,7 @@ namespace ExpenseMonitor.AppManagement
         filteredEntries = _entryFilter.Filter( filteredEntries, specification );
       }
 
-      return ( int )filteredEntries.Sum( entry => entry.Amount );
+      return filteredEntries.Sum( entry => entry.Amount );
     }
 
     //-------------------------------------------------------------------------

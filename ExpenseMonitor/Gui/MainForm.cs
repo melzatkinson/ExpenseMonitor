@@ -47,7 +47,6 @@ namespace ExpenseMonitor
       DateTime threeMonthsAgo = DateTime.Now.AddMonths( -3 );
       startDatePicker.Value = threeMonthsAgo;
 
-      maximumGraphYValueInput.Text = Convert.ToString( _barGraph.MaximumAmount );
       monthSelectedOutput.Text = endDatePicker.Value.ToString( "MMMM" ) + " " + endDatePicker.Value.Date.Year;
 
       RefreshForm();
@@ -258,17 +257,6 @@ namespace ExpenseMonitor
     private void updateExistingBudget_Click( object sender, EventArgs e )
     {
       _changeCategoryBudgetForm.ShowDialog( this );
-    }
-
-    //-------------------------------------------------------------------------
-
-    private void maximumGraphYValueInput_Submit( object sender, KeyEventArgs e )
-    {
-      if( e.KeyCode != Keys.Enter )
-        return;
-
-      _barGraph.MaximumAmount = Convert.ToInt32( maximumGraphYValueInput.Text );
-      Invalidate();
     }
 
     //-------------------------------------------------------------------------
