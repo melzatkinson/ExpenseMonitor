@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using ExpenseMonitor;
 using ExpenseMonitor.AppManagement;
 using ExpenseMonitor.AppManagement.EntryFiltering.Specifications;
+using ExpenseMonitor.AppManagement.ManualEntries;
 
 public class BarGraph
 {
@@ -14,7 +15,8 @@ public class BarGraph
     set { _maximumAmount = value; }
   }
 
-  private readonly AppManager _appManager;
+  private readonly IManualEntriesInfo _manualEntriesInfo;
+  private readonly ICategoriesInfo _categoriesInfo;
 
   private readonly Pen _blackPen = new Pen( Color.Black, 1 );
   private readonly SolidBrush _redBrush = new SolidBrush( Color.Red );
@@ -38,9 +40,10 @@ public class BarGraph
 
   //-------------------------------------------------------------------------
 
-  public BarGraph( AppManager appManager )
+  public BarGraph( IManualEntriesInfo manualEntriesInfo, ICategoriesInfo categoriesInfo )
   {
-    _appManager = appManager;
+    _manualEntriesInfo = manualEntriesInfo;
+    _categoriesInfo = categoriesInfo;
   }
 
   //-------------------------------------------------------------------------
@@ -57,7 +60,7 @@ public class BarGraph
 
     GenerateTotalsPerCategory( form );
 
-    _barWidth = GraphWidth / ( ( double )_appManager.CategoryManager.CategoryInfos.Count * SlotsPerCategory );
+    _barWidth = GraphWidth / ( ( double )_categoriesInfo.GetCategoryCount() * SlotsPerCategory );
     _scale = ( double )GraphHeight / _maximumAmount;
 
     DrawAxes();
@@ -66,11 +69,7 @@ public class BarGraph
     foreach( var category in _categoryTotals )
     {
       AddXAxisLabeling( category.Key );
-
-      double categoryBudget;
-      _appManager.CategoryManager.CategoryInfos.TryGetValue( category.Key, out categoryBudget );
-
-      DrawBars( category.Value, categoryBudget );
+      DrawBars( category.Value, _categoriesInfo.GetBudgetForCategory( category.Key ) );
     }
   }
 
@@ -81,15 +80,15 @@ public class BarGraph
     _categoryTotals.Clear();
     _maximumAmount = MinimumYAxisValueMaximum;
 
-    foreach( var entry in _appManager.CategoryManager.CategoryInfos )
+    foreach( var entry in _categoriesInfo.GetCategories() )
     {
-      var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+      var specifications = new List<ISpecification<Entry>>()
       {
-        new EntryDateSpecification(form.GetSelectedStartDate(), form.GetSelectedEndDate()),
-        new EntryCategorySpecification(entry.Key)
+        new EntryDateSpecification( form.GetSelectedStartDate(), form.GetSelectedEndDate() ),
+        new EntryCategorySpecification( entry.Key )
       };
 
-      var total = _appManager.ManualEntryManager.GetTotal( specifications );
+      var total = _manualEntriesInfo.GetTotal( specifications );
       _categoryTotals.Add( entry.Key, total );
 
       if( total > _maximumAmount ) _maximumAmount = ( int )total;

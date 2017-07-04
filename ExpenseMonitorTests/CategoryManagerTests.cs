@@ -13,11 +13,11 @@ namespace ExpenseMonitorTests
   [TestClass]
   public class CategoryManagerTests
   {
-    private readonly CategoryManager _categoryManager = GenerateManagerWithCategories();
+    private readonly CategoriesManager _categoryManager = GenerateManagerWithCategories();
 
     //-------------------------------------------------------------------------
 
-    public static CategoryManager GenerateManagerWithCategories()
+    public static CategoriesManager GenerateManagerWithCategories()
     {
       XmlDocument doc = new XmlDocument();
 
@@ -31,7 +31,7 @@ namespace ExpenseMonitorTests
 
       var list = new List<XmlElement> { element1, element2 };
 
-      var categorymanager = new CategoryManager();
+      var categorymanager = new CategoriesManager();
 
       categorymanager.Initialise( list );
 
@@ -48,7 +48,7 @@ namespace ExpenseMonitorTests
 
       var index = 0;
 
-      foreach( var categoryInfo in _categoryManager.CategoryInfos )
+      foreach( var categoryInfo in _categoryManager.GetCategories() )
       {
         Assert.AreEqual( expectedNames[ index ], categoryInfo.Key );
         Assert.AreEqual( expectedBudgets[ index ], categoryInfo.Value );
@@ -70,8 +70,10 @@ namespace ExpenseMonitorTests
       _categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
 
       // Assert
-      Assert.AreEqual( categoryNameToAdd, _categoryManager.CategoryInfos.Last().Key );
-      Assert.AreEqual( budgetToAdd, _categoryManager.CategoryInfos.Last().Value );
+      var categoryName = _categoryManager.GetCategoryNameAtIndex( _categoryManager.GetCategoryCount() - 1 );
+
+      Assert.AreEqual( categoryNameToAdd, categoryName );
+      Assert.AreEqual( budgetToAdd, _categoryManager.GetBudgetForCategory( categoryName ) );
     }
 
     //-------------------------------------------------------------------------
@@ -80,16 +82,16 @@ namespace ExpenseMonitorTests
     public void AddCategory_WithDuplicateNewName()
     {
       // Arrange
-      var categoryNameToAdd = _categoryManager.CategoryInfos.First().Key;
+      var categoryNameToAdd = _categoryManager.GetCategoryNameAtIndex( 0 );
       var budgetToAdd = 13;
 
-      var lastAddedCategory = _categoryManager.CategoryInfos.Last().Key;
+      var lastAddedCategory = _categoryManager.GetCategoryNameAtIndex( _categoryManager.GetCategoryCount() - 1 );
 
       // Act
       _categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
 
       // Assert
-      Assert.AreEqual( lastAddedCategory, _categoryManager.CategoryInfos.Last().Key );
+      Assert.AreEqual( lastAddedCategory, _categoryManager.GetCategoryNameAtIndex( _categoryManager.GetCategoryCount() - 1 ) );
     }
 
     //-------------------------------------------------------------------------
@@ -101,13 +103,13 @@ namespace ExpenseMonitorTests
       var categoryNameToAdd = "";
       var budgetToAdd = 13;
 
-      var lastAddedCategory = _categoryManager.CategoryInfos.Last().Key;
+      var lastAddedCategory = _categoryManager.GetCategoryNameAtIndex( _categoryManager.GetCategoryCount() - 1 );
 
       // Act
       _categoryManager.AddCategory( categoryNameToAdd, budgetToAdd );
 
       // Assert
-      Assert.AreEqual( lastAddedCategory, _categoryManager.CategoryInfos.Last().Key );
+      Assert.AreEqual( lastAddedCategory, _categoryManager.GetCategoryNameAtIndex( _categoryManager.GetCategoryCount() - 1 ) );
     }
 
     //-------------------------------------------------------------------------
@@ -116,17 +118,14 @@ namespace ExpenseMonitorTests
     public void UpdateCategoryBudget_UpdatesBudget()
     {
       // Arrange
-      var categoryNameToUpdate = _categoryManager.CategoryInfos.First().Key;
+      var categoryNameToUpdate = _categoryManager.GetCategoryNameAtIndex( 0 );
       var budgetToUpdateTo = 20;
 
       // Act
       _categoryManager.UpdateCategoryBudget( categoryNameToUpdate, budgetToUpdateTo );
 
       // Assert
-      double actual;
-      _categoryManager.CategoryInfos.TryGetValue( categoryNameToUpdate, out actual );
-
-      Assert.AreEqual( budgetToUpdateTo, actual );
+      Assert.AreEqual( budgetToUpdateTo, _categoryManager.GetBudgetForCategory( categoryNameToUpdate ) );
     }
 
     //-------------------------------------------------------------------------
@@ -135,14 +134,14 @@ namespace ExpenseMonitorTests
     public void GetBudgetFromName_CorrectBudgetValue()
     {
       // Arrange
-      var categoryToTest = _categoryManager.CategoryInfos.First().Key;
+      var categoryToTest = _categoryManager.GetCategoryNameAtIndex( 0 );
 
       // Act
-      var actual = _categoryManager.GetBudgetFromName( categoryToTest );
+      var actual = _categoryManager.GetBudgetForCategory( categoryToTest );
 
       // Assert
-      var expected = _categoryManager.CategoryInfos.First().Value;
-      Assert.AreEqual( expected, actual );
+      var expected = _categoryManager.GetCategories().First().Value;
+      Assert.AreEqual( expected, _categoryManager.GetBudgetForCategory( categoryToTest ) );
     }
 
     //-------------------------------------------------------------------------
@@ -150,13 +149,8 @@ namespace ExpenseMonitorTests
     [TestMethod]
     public void GetTotalBudget_CorrectAmount()
     {
-      // Act
-      var actual = _categoryManager.GetTotalBudgetAmount();
-
       // Assert
-      var total = _categoryManager.CategoryInfos.Values.Sum();
-   
-      Assert.AreEqual( total, actual );
+      Assert.AreEqual( 1100, _categoryManager.GetTotalBudgetAmount() );
     }
 
     //-------------------------------------------------------------------------
@@ -166,7 +160,7 @@ namespace ExpenseMonitorTests
     {
       // Arrange
       var mock = new CategoryManagerTestMock( _categoryManager );
-      
+
       // Act
       _categoryManager.AddCategory( "something", 10 );
 

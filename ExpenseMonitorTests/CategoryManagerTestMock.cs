@@ -9,9 +9,9 @@ namespace ExpenseMonitorTests
 
     //-------------------------------------------------------------------------
 
-    public CategoryManagerTestMock( CategoryManager categoryManager )
+    public CategoryManagerTestMock( CategoriesManager categoriesManager )
     {
-      categoryManager.CategoriesChanged += OnCategoriesChanged;
+      categoriesManager.CategoriesChanged += OnCategoriesChanged;
     }
 
     //-------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 using System;
 using ExpenseMonitor.AppManagement;
+using ExpenseMonitor.AppManagement.ManualEntries;
 
 namespace ExpenseMonitorTests
 {
@@ -9,9 +10,9 @@ namespace ExpenseMonitorTests
 
     //-------------------------------------------------------------------------
 
-    public ManualEntryManagerTestMock( ManualEntryManager manualEntryManager )
+    public ManualEntryManagerTestMock( IManualEntriesInfo manualEntriesInfo )
     {
-      manualEntryManager.ManualEntriesChanged += OnManualEntriesChanged;
+      manualEntriesInfo.ManualEntriesChanged += OnManualEntriesChanged;
     }
 
     //-------------------------------------------------------------------------

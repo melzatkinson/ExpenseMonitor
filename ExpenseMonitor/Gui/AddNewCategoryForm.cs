@@ -6,13 +6,13 @@ namespace ExpenseMonitor
 {
   public partial class AddNewCategoryForm : Form
   {
-    private readonly AppManager _appManager;
+    private readonly ICategoriesInfo _categoriesInfo;
 
     //-------------------------------------------------------------------------
 
-    public AddNewCategoryForm( AppManager appManager )
+    public AddNewCategoryForm( ICategoriesInfo categoriesInfo )
     {
-      _appManager = appManager;
+      _categoriesInfo = categoriesInfo;
 
       InitializeComponent();
     }
@@ -24,7 +24,7 @@ namespace ExpenseMonitor
       if( e.KeyCode != Keys.Enter )
         return;
 
-      if( !_appManager.CategoryManager.AddCategory( newCategoryInput.Text, double.Parse( budgetInput.Text, CultureInfo.InvariantCulture ) ) )
+      if( !_categoriesInfo.AddCategory( newCategoryInput.Text, double.Parse( budgetInput.Text, CultureInfo.InvariantCulture ) ) )
       {
         MessageBox.Show( "Invalid! Empty or duplicate." );
       }

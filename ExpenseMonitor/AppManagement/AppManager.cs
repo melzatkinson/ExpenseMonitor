@@ -1,13 +1,15 @@
 using System.IO;
 using System.Reflection;
+using ExpenseMonitor.AppManagement.ManualEntries;
+using ExpenseMonitor.AppManagement.RecurringEntries;
 
 namespace ExpenseMonitor.AppManagement
 {
   public class AppManager
   {
-    public CategoryManager CategoryManager = new CategoryManager();
-    public ManualEntryManager ManualEntryManager = new ManualEntryManager();
-    public RecurringEntryManager RecurringEntryManager = new RecurringEntryManager();
+    private readonly ICategoriesInfo _categoriesInfo;
+    private readonly IManualEntriesInfo _manualEntriesInfo;
+    private readonly IRecurringEntriesInfo _recurringEntriesInfo;
 
     private readonly XmlStream _xmlStream = new XmlStream();
 
@@ -15,29 +17,32 @@ namespace ExpenseMonitor.AppManagement
 
     //-------------------------------------------------------------------------
 
-    public AppManager()
+    public AppManager( IManualEntriesInfo manualEntriesInfo, ICategoriesInfo categoriesInfo, IRecurringEntriesInfo recurringEntriesInfo )
     {
+      _manualEntriesInfo = manualEntriesInfo;
+      _categoriesInfo = categoriesInfo;
+      _recurringEntriesInfo = recurringEntriesInfo;
+
       SetXmlFilePath();
 
       File.SetAttributes( _xmlFilePath, FileAttributes.Normal );
 
       _xmlStream.Load( _xmlFilePath );
 
-      CategoryManager.Initialise( _xmlStream.GetElementsWithName( "Category" ) );
-      ManualEntryManager.Initialise( _xmlStream.GetElementsWithName( "ManualEntry" ) );
-      RecurringEntryManager.Initialise( _xmlStream.GetElementsWithName( "RecurringEntry" ) );
+      _categoriesInfo.Initialise( _xmlStream.GetElementsWithName( "Category" ) );
+      _manualEntriesInfo.Initialise( _xmlStream.GetElementsWithName( "ManualEntry" ) );
+      _recurringEntriesInfo.Initialise( _xmlStream.GetElementsWithName( "RecurringEntry" ) );
     }
 
     //-------------------------------------------------------------------------
 
     private void SetXmlFilePath()
     {
-      string devPath = @"../../Records.xml";
       _xmlFilePath = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ) + @"\Records.xml";
 
       if( !File.Exists( _xmlFilePath ) )
       {
-        _xmlFilePath = devPath;
+        _xmlFilePath = @"../../Records.xml";
       }
     }
 
@@ -45,7 +50,7 @@ namespace ExpenseMonitor.AppManagement
 
     public void Shutdown()
     {
-      _xmlStream.WriteToXml( _xmlFilePath, CategoryManager, ManualEntryManager, RecurringEntryManager );
+      _xmlStream.WriteToXml( _xmlFilePath, _categoriesInfo, _manualEntriesInfo, _recurringEntriesInfo );
     }
 
     //-------------------------------------------------------------------------

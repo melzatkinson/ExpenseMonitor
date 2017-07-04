@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using ExpenseMonitor.AppManagement;
 using ExpenseMonitor.AppManagement.EntryFiltering;
 using ExpenseMonitor.AppManagement.EntryFiltering.Specifications;
+using ExpenseMonitor.AppManagement.ManualEntries;
+using ExpenseMonitor.AppManagement.RecurringEntries;
 using ExpenseMonitor.Gui;
 
 namespace ExpenseMonitor
@@ -19,13 +21,17 @@ namespace ExpenseMonitor
 
     private readonly EntryFilter _entryFilter = new EntryFilter();
 
-    private readonly AppManager _appManager;
+    private readonly IManualEntriesInfo _manualEntriesInfo;
+    private readonly ICategoriesInfo _categoriesInfo;
+    private readonly IRecurringEntriesInfo _recurringEntriesInfo;
 
     //-------------------------------------------------------------------------
 
-    public MainForm( AppManager appManager )
+    public MainForm( IManualEntriesInfo manualEntriesInfo, ICategoriesInfo categoriesInfo, IRecurringEntriesInfo recurringEntriesInfo )
     {
-      _appManager = appManager;
+      _manualEntriesInfo = manualEntriesInfo;
+      _categoriesInfo = categoriesInfo;
+      _recurringEntriesInfo = recurringEntriesInfo;
 
       InitialiseForms();
       SetupEvents();
@@ -39,12 +45,12 @@ namespace ExpenseMonitor
 
     private void InitialiseMainForm()
     {
-      RefreshCategoriesComboBox( _appManager.CategoryManager );
+      RefreshCategoriesComboBox( _categoriesInfo );
 
       if( existingCategories.Items.Count > 0 )
         existingCategories.SelectedIndex = 0;
 
-      DateTime threeMonthsAgo = DateTime.Now.AddMonths( -3 );
+      var threeMonthsAgo = DateTime.Now.AddMonths( -3 );
       startDatePicker.Value = threeMonthsAgo;
 
       monthSelectedOutput.Text = endDatePicker.Value.ToString( "MMMM" ) + " " + endDatePicker.Value.Date.Year;
@@ -56,18 +62,18 @@ namespace ExpenseMonitor
 
     private void InitialiseForms()
     {
-      _addNewCategoryForm = new AddNewCategoryForm( _appManager );
-      _changeCategoryBudgetForm = new ChangeCategoryBudgetForm( _appManager );
-      _addFixedEntryForm = new AddFixedEntryForm( _appManager );
-      _barGraph = new BarGraph( _appManager );
+      _addNewCategoryForm = new AddNewCategoryForm( _categoriesInfo );
+      _changeCategoryBudgetForm = new ChangeCategoryBudgetForm( _categoriesInfo );
+      _addFixedEntryForm = new AddFixedEntryForm( _manualEntriesInfo, _categoriesInfo, _recurringEntriesInfo );
+      _barGraph = new BarGraph( _manualEntriesInfo, _categoriesInfo );
     }
 
     //-------------------------------------------------------------------------
 
     private void SetupEvents()
     {
-      _appManager.CategoryManager.CategoriesChanged += OnCategoriesChanged;
-      _appManager.ManualEntryManager.ManualEntriesChanged += OnManualEntriesChanged;
+      _categoriesInfo.CategoriesChanged += OnCategoriesChanged;
+      _manualEntriesInfo.ManualEntriesChanged += OnManualEntriesesChanged;
       _changeCategoryBudgetForm.BudgetChanged += OnBudgetChanged;
       Paint += _barGraph.DrawGraph;
     }
@@ -99,11 +105,11 @@ namespace ExpenseMonitor
 
     public void OnCategoriesChanged( object source, EventArgs e )
     {
-      CategoryManager categoryManager = ( CategoryManager )source;
-      if( categoryManager == null )
+      var categoriesManager = ( ICategoriesInfo )source;
+      if( categoriesManager == null )
         return;
 
-      RefreshCategoriesComboBox( categoryManager );
+      RefreshCategoriesComboBox( categoriesManager );
 
       existingCategories.SelectedIndex = existingCategories.Items.Count - 1;
 
@@ -112,7 +118,7 @@ namespace ExpenseMonitor
 
     //-------------------------------------------------------------------------
 
-    public void OnManualEntriesChanged( object source, EventArgs e )
+    public void OnManualEntriesesChanged( object source, EventArgs e )
     {
       RefreshForm();
     }
@@ -126,11 +132,11 @@ namespace ExpenseMonitor
 
     //-------------------------------------------------------------------------
 
-    private void RefreshCategoriesComboBox( CategoryManager categoryManager )
+    private void RefreshCategoriesComboBox( ICategoriesInfo categoriesInfo )
     {
       existingCategories.Items.Clear();
 
-      foreach( var category in categoryManager.CategoryInfos )
+      foreach( var category in categoriesInfo.GetCategories() )
       {
         existingCategories.Items.Add( category.Key );
       }
@@ -151,7 +157,7 @@ namespace ExpenseMonitor
     {
       recordsTable.Rows.Clear();
 
-      foreach( var entry in _entryFilter.Filter( _appManager.ManualEntryManager.Entries, new EntryDateSpecification( startDatePicker.Value.Date, endDatePicker.Value.Date ) ) )
+      foreach( var entry in _entryFilter.Filter( _manualEntriesInfo.GetEntries(), new EntryDateSpecification( startDatePicker.Value.Date, endDatePicker.Value.Date ) ) )
       {
         var index = recordsTable.Rows.Add();
         recordsTable.Rows[ index ].Cells[ "EntryCategory" ].Value = entry.Category;
@@ -165,8 +171,8 @@ namespace ExpenseMonitor
 
     private void RefreshProfilingInformation()
     {
-      double totalExpenditure = _appManager.ManualEntryManager.GetTotal( new List<ISpecification<ManualEntryManager.Entry>>() { new EntryMonthSpecification( endDatePicker.Value.Date ) } );
-      double totalBudget = _appManager.CategoryManager.GetTotalBudgetAmount();
+      double totalExpenditure = _manualEntriesInfo.GetTotal( new List<ISpecification<Entry>>() { new EntryMonthSpecification( endDatePicker.Value.Date ) } );
+      double totalBudget = _categoriesInfo.GetTotalBudgetAmount();
 
       totalsOutput.Text = Convert.ToString( totalExpenditure, CultureInfo.InvariantCulture );
       totalsOutput.BackColor = totalExpenditure > totalBudget ? Color.Red : Color.Green;
@@ -175,17 +181,17 @@ namespace ExpenseMonitor
 
       totalsTable.Rows.Clear();
 
-      foreach( var category in _appManager.CategoryManager.CategoryInfos.Keys )
+      foreach( var category in _categoriesInfo.GetCategoryNames() )
       {
-        var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+        var specifications = new List<ISpecification<Entry>>()
         {
-          new EntryMonthSpecification(endDatePicker.Value.Date),
-          new EntryCategorySpecification(category)
+          new EntryMonthSpecification( endDatePicker.Value.Date ),
+          new EntryCategorySpecification( category )
         };
 
         var index = totalsTable.Rows.Add();
         totalsTable.Rows[ index ].Cells[ "totalsCategory" ].Value = category;
-        totalsTable.Rows[ index ].Cells[ "totalsAmount" ].Value = _appManager.ManualEntryManager.GetTotal( specifications );
+        totalsTable.Rows[ index ].Cells[ "totalsAmount" ].Value = _manualEntriesInfo.GetTotal( specifications );
       }
     }
 
@@ -193,7 +199,7 @@ namespace ExpenseMonitor
 
     private void AddNewEntry_Click( object sender, EventArgs e )
     {
-      _appManager.ManualEntryManager.Add(
+      _manualEntriesInfo.Add(
         DateTime.Now.Date,
         existingCategories.SelectedItem.ToString(),
         double.Parse( amountInput.Text, CultureInfo.InvariantCulture ),
@@ -226,7 +232,7 @@ namespace ExpenseMonitor
     {
       int selectedIndex = recordsTable.CurrentCell.RowIndex;
       recordsTable.Rows.RemoveAt( selectedIndex );
-      _appManager.ManualEntryManager.RemoveAt( selectedIndex );
+      _manualEntriesInfo.RemoveAt( selectedIndex );
 
       Invalidate();
     }

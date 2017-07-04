@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
 using ExpenseMonitor.AppManagement;
 using ExpenseMonitor.AppManagement.EntryFiltering;
 using ExpenseMonitor.AppManagement.EntryFiltering.Specifications;
+using ExpenseMonitor.AppManagement.ManualEntries;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpenseMonitorTests
@@ -15,11 +17,11 @@ namespace ExpenseMonitorTests
   [TestClass]
   public class ManualEntryManagerTests
   {
-    private readonly ManualEntryManager _manualEntryManager = GenerateManualEntryManager();
+    private readonly ManualEntriesManager _manualEntryManager = GenerateManualEntryManager();
 
     //-------------------------------------------------------------------------
 
-    public static ManualEntryManager GenerateManualEntryManager()
+    public static ManualEntriesManager GenerateManualEntryManager()
     {
       XmlDocument doc = new XmlDocument();
 
@@ -37,7 +39,7 @@ namespace ExpenseMonitorTests
 
       var xmlList = new List<XmlElement> { element1, element2 };
 
-      var manualEntryManager = new ManualEntryManager();
+      var manualEntryManager = new ManualEntriesManager();
       manualEntryManager.Initialise( xmlList );
 
       return manualEntryManager;
@@ -93,7 +95,7 @@ namespace ExpenseMonitorTests
 
       var index = 0;
 
-      foreach( var entry in _manualEntryManager.Entries )
+      foreach( var entry in _manualEntryManager.GetEntries() )
       {
         Assert.AreEqual( expectedDates[ index ], entry.Date );
         Assert.AreEqual( expectedCategories[ index ], entry.Category );
@@ -110,7 +112,7 @@ namespace ExpenseMonitorTests
     public void Add_NewEntryGetsAdded()
     {
       // Arrange
-      var newEntry = new ManualEntryManager.Entry
+      var newEntry = new Entry
       {
         Date = DateTime.ParseExact( "01/01/2000", "dd/MM/yyyy", CultureInfo.InvariantCulture ),
         Category = "testCategory",
@@ -122,7 +124,7 @@ namespace ExpenseMonitorTests
       _manualEntryManager.Add( newEntry.Date, newEntry.Category, newEntry.Amount, newEntry.Description );
 
       // Assert
-      var lastEntry = _manualEntryManager.Entries[ _manualEntryManager.Entries.Count - 1 ];
+      var lastEntry = _manualEntryManager.GetEntries().ToList()[ _manualEntryManager.GetEntries().Count() - 1 ];
 
       Assert.AreEqual( newEntry.Date, lastEntry.Date );
       Assert.AreEqual( newEntry.Category, lastEntry.Category );
@@ -137,13 +139,13 @@ namespace ExpenseMonitorTests
     {
       // Arrange
       var indexToRemove = 0;
-      var entry = _manualEntryManager.Entries[ indexToRemove + 1 ];
+      var entry = _manualEntryManager.GetEntries().ToList()[ indexToRemove + 1 ];
 
       // Act
       _manualEntryManager.RemoveAt( indexToRemove );
 
       // Assert
-      var newEntry = _manualEntryManager.Entries[ indexToRemove ];
+      var newEntry = _manualEntryManager.GetEntries().ToList()[ indexToRemove ];
 
       Assert.AreEqual( newEntry.Date, entry.Date );
       Assert.AreEqual( newEntry.Category, entry.Category );
@@ -178,7 +180,7 @@ namespace ExpenseMonitorTests
       var mock = new ManualEntryManagerTestMock( _manualEntryManager );
 
       // Act
-      _manualEntryManager.RemoveAt( _manualEntryManager.Entries.Count - 1 );
+      _manualEntryManager.RemoveAt( _manualEntryManager.GetEntries().ToList().Count - 1 );
 
       // Assert
       Assert.AreEqual( true, mock.EntriesChanged );
@@ -200,10 +202,10 @@ namespace ExpenseMonitorTests
       var startDate = DateTime.ParseExact( "01/01/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
       var endDate = DateTime.ParseExact( "01/01/2018", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
-      var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+      var specifications = new List<ISpecification<Entry>>()
       {
-        new EntryDateSpecification(startDate, endDate),
-        new EntryCategorySpecification("petrol")
+        new EntryDateSpecification( startDate, endDate ),
+        new EntryCategorySpecification( "petrol" )
       };
 
       // Act
@@ -229,7 +231,7 @@ namespace ExpenseMonitorTests
       var date = DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
       // Act
-      var total = manualEntryManager.GetTotal( new List<ISpecification<ManualEntryManager.Entry>>() { new EntryMonthSpecification( date ) } );
+      double total = manualEntryManager.GetTotal( new List<ISpecification<Entry>>() { new EntryMonthSpecification( date ) } );
 
       // Assert
       Assert.AreEqual( 2000, actual: total );
@@ -255,14 +257,14 @@ namespace ExpenseMonitorTests
 
       var date = DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
-      var specifications = new List<ISpecification<ManualEntryManager.Entry>>()
+      var specifications = new List<ISpecification<Entry>>()
       {
         new EntryMonthSpecification( date ),
         new EntryCategorySpecification( "petrol" )
       };
 
       // Act
-      var total = manualEntryManager.GetTotal( specifications );
+      double total = manualEntryManager.GetTotal( specifications );
 
       // Assert
       Assert.AreEqual( 2000, actual: total );

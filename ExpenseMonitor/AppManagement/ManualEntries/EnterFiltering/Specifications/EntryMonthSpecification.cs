@@ -1,8 +1,9 @@
 ﻿using System;
+using ExpenseMonitor.AppManagement.ManualEntries;
 
 namespace ExpenseMonitor.AppManagement.EntryFiltering
 {
-  public class EntryMonthSpecification : ISpecification<ManualEntryManager.Entry>
+  public class EntryMonthSpecification : ISpecification<Entry>
   {
     private readonly DateTime _date;
 
@@ -15,7 +16,7 @@ namespace ExpenseMonitor.AppManagement.EntryFiltering
 
     //-------------------------------------------------------------------------
 
-    public bool IsSatisfied( ManualEntryManager.Entry entry )
+    public bool IsSatisfied( Entry entry )
     {
       return entry.Date.Month == _date.Month;
     }

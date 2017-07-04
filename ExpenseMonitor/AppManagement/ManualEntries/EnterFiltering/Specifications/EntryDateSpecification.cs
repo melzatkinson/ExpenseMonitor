@@ -1,8 +1,9 @@
 using System;
+using ExpenseMonitor.AppManagement.ManualEntries;
 
 namespace ExpenseMonitor.AppManagement
 {
-  public class EntryDateSpecification : ISpecification<ManualEntryManager.Entry>
+  public class EntryDateSpecification : ISpecification<Entry>
   {
     private readonly DateTime _startDate;
     private readonly DateTime _endDate;
@@ -17,7 +18,7 @@ namespace ExpenseMonitor.AppManagement
 
     //-------------------------------------------------------------------------
 
-    public bool IsSatisfied( ManualEntryManager.Entry entry )
+    public bool IsSatisfied( Entry entry )
     {
       return entry.Date >= _startDate && entry.Date <= _endDate;
     }

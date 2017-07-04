@@ -7,18 +7,19 @@ namespace ExpenseMonitor.Gui
 {
   public partial class ChangeCategoryBudgetForm : Form
   {
-    private readonly AppManager _appManager;
+    private readonly ICategoriesInfo _categoriesInfo;
 
     public delegate void BudgetChangedEventHandler( object source, EventArgs args );
     public event BudgetChangedEventHandler BudgetChanged;
 
     //-------------------------------------------------------------------------
 
-    public ChangeCategoryBudgetForm( AppManager appManager )
+    public ChangeCategoryBudgetForm( ICategoriesInfo categoriesInfo )
     {
       InitializeComponent();
 
-      _appManager = appManager;
+      _categoriesInfo = categoriesInfo;
+
       Shown += OnShown;
     }
 
@@ -29,7 +30,7 @@ namespace ExpenseMonitor.Gui
       if( e.KeyCode != Keys.Enter )
         return;
 
-      _appManager.CategoryManager.UpdateCategoryBudget( categoryInput.SelectedItem.ToString(), double.Parse( newBudgetInput.Text, CultureInfo.InvariantCulture ) );
+      _categoriesInfo.UpdateCategoryBudget( categoryInput.SelectedItem.ToString(), double.Parse( newBudgetInput.Text, CultureInfo.InvariantCulture ) );
       newBudgetInput.Text = "";
 
       OnBudgetChanged();
@@ -43,7 +44,7 @@ namespace ExpenseMonitor.Gui
     {
       categoryInput.Items.Clear();
 
-      foreach( var category in _appManager.CategoryManager.CategoryInfos )
+      foreach( var category in _categoriesInfo.GetCategories() )
       {
         categoryInput.Items.Add( category.Key );
         newBudgetInput.Text = Convert.ToString( category.Value, CultureInfo.InvariantCulture );
@@ -56,7 +57,7 @@ namespace ExpenseMonitor.Gui
 
     private void categoryInput_SelectedIndexChanged( object sender, EventArgs e )
     {
-      newBudgetInput.Text = Convert.ToString( _appManager.CategoryManager.GetBudgetFromName( categoryInput.Text ), CultureInfo.InvariantCulture );
+      newBudgetInput.Text = Convert.ToString( _categoriesInfo.GetBudgetForCategory( categoryInput.Text ), CultureInfo.InvariantCulture );
     }
 
     //-------------------------------------------------------------------------

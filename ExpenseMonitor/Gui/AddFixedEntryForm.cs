@@ -2,18 +2,24 @@
 using System.Linq;
 using System.Windows.Forms;
 using ExpenseMonitor.AppManagement;
+using ExpenseMonitor.AppManagement.ManualEntries;
+using ExpenseMonitor.AppManagement.RecurringEntries;
 
 namespace ExpenseMonitor.Gui
 {
   public partial class AddFixedEntryForm : Form
   {
-    private readonly AppManager _appManager;
+    private readonly IManualEntriesInfo _manualEntriesInfo;
+    private readonly ICategoriesInfo _categoriesInfo;
+    private readonly IRecurringEntriesInfo _recurringEntriesInfo;
 
     //-------------------------------------------------------------------------
 
-    public AddFixedEntryForm( AppManager appManager )
+    public AddFixedEntryForm( IManualEntriesInfo manualEntriesInfo, ICategoriesInfo categoriesInfo, IRecurringEntriesInfo recurringEntriesInfo )
     {
-      _appManager = appManager;
+      _manualEntriesInfo = manualEntriesInfo;
+      _categoriesInfo = categoriesInfo;
+      _recurringEntriesInfo = recurringEntriesInfo;
 
       InitializeComponent();
 
@@ -26,16 +32,16 @@ namespace ExpenseMonitor.Gui
     {
       fixedEntriesTable.Rows.Clear();
 
-      foreach( var entry in _appManager.RecurringEntryManager.RecurringEntries )
+      foreach( var entry in _recurringEntriesInfo.GetEntries() )
       {
         var index = fixedEntriesTable.Rows.Add();
 
-        DataGridViewComboBoxCell comboBox = ( DataGridViewComboBoxCell )fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryCategory" ];
+        var comboBox = ( DataGridViewComboBoxCell )fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryCategory" ];
         comboBox.Items.Clear();
 
         int categoryIndex = 0;
 
-        foreach( var category in _appManager.CategoryManager.CategoryInfos )
+        foreach( var category in _categoriesInfo.GetCategories() )
         {
           comboBox.Items.Add( category.Key );
 
@@ -47,7 +53,7 @@ namespace ExpenseMonitor.Gui
           categoryIndex++;
         }
 
-        fixedEntriesTable.Rows[index].Cells["selected"].Value = false;
+        fixedEntriesTable.Rows[ index ].Cells[ "selected" ].Value = false;
         fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryAmount" ].Value = entry.Amount;
         fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryDescription" ].Value = entry.Description;
       }
@@ -61,18 +67,18 @@ namespace ExpenseMonitor.Gui
 
       foreach( var entry in fixedEntriesTable.Rows )
       {
-        DataGridViewRow row = ( DataGridViewRow )entry;
+        var row = ( DataGridViewRow )entry;
 
-        string category = row.Cells[ "fixedEntryCategory" ].Value.ToString();
-        double amount = Convert.ToDouble( row.Cells[ "fixedEntryAmount" ].Value );
-        string description = ( string )row.Cells[ "fixedEntryDescription" ].Value;
+        var category = row.Cells[ "fixedEntryCategory" ].Value.ToString();
+        var amount = Convert.ToDouble( row.Cells[ "fixedEntryAmount" ].Value );
+        var description = ( string )row.Cells[ "fixedEntryDescription" ].Value;
 
         if( ( bool )row.Cells[ "selected" ].Value )
         {
-          _appManager.ManualEntryManager.Add( DateTime.Now.Date, category, amount, description );
+          _manualEntriesInfo.Add( DateTime.Now.Date, category, amount, description );
         }
 
-        _appManager.RecurringEntryManager.UpdateAtIndex( index, category, amount, description );
+        _recurringEntriesInfo.UpdateAtIndex( index, category, amount, description );
         index++;
       }
 
@@ -84,9 +90,9 @@ namespace ExpenseMonitor.Gui
     private void addNewRecurringEntry_Click( object sender, EventArgs e )
     {
       var index = fixedEntriesTable.Rows.Add();
-      DataGridViewComboBoxCell comboBox = ( DataGridViewComboBoxCell )fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryCategory" ];
+      var comboBox = ( DataGridViewComboBoxCell )fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryCategory" ];
 
-      foreach( var category in _appManager.CategoryManager.CategoryInfos )
+      foreach( var category in _categoriesInfo.GetCategories() )
       {
         comboBox.Items.Add( category.Key );
       }
@@ -96,7 +102,7 @@ namespace ExpenseMonitor.Gui
       fixedEntriesTable.Rows[ index ].Cells[ "selected" ].Value = false;
       fixedEntriesTable.Rows[ index ].Cells[ "fixedEntryDescription" ].Value = "";
 
-      _appManager.RecurringEntryManager.Add( _appManager.CategoryManager.CategoryInfos.First().Key, 0.0, "" );
+      _recurringEntriesInfo.Add( _categoriesInfo.GetCategories().First().Key, 0.0, "" );
     }
 
     //-------------------------------------------------------------------------
@@ -105,7 +111,7 @@ namespace ExpenseMonitor.Gui
     {
       int selectedIndex = fixedEntriesTable.CurrentCell.RowIndex;
       fixedEntriesTable.Rows.RemoveAt( selectedIndex );
-      _appManager.RecurringEntryManager.RemoveAt( selectedIndex );
+      _recurringEntriesInfo.RemoveAt( selectedIndex );
     }
 
     //-------------------------------------------------------------------------
