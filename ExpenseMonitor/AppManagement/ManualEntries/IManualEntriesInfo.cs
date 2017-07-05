@@ -12,7 +12,7 @@ namespace ExpenseMonitor.AppManagement.ManualEntries
 
     void Add( DateTime date, string category, double amount, string description );
 
-    double GetTotal( ISpecification<Entry> specification );
+    double GetTotal( List<ISpecification<Entry>> specifications );
 
     void RemoveAt( int index );
 

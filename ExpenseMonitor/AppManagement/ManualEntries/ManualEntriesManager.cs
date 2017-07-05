@@ -70,9 +70,16 @@ namespace ExpenseMonitor.AppManagement.ManualEntries
 
     //-------------------------------------------------------------------------
 
-    public double GetTotal( ISpecification<Entry> specification )
+    public double GetTotal( List<ISpecification<Entry>> specifications )
     {
-      return _entryFilter.Filter( _entries, specification ).Sum( entry => entry.Amount );
+      IEnumerable<Entry> filteredEntries = _entries;
+
+      foreach( var specification in specifications )
+      {
+        filteredEntries = _entryFilter.Filter( filteredEntries, specification );
+      }
+
+      return filteredEntries.Sum( entry => entry.Amount );
     }
 
     //-------------------------------------------------------------------------

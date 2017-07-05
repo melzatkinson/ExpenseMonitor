@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppManagement\AndSpecification.cs" />
     <Compile Include="AppManagement\AppManager.cs" />
     <Compile Include="AppManagement\Categories\CategoriesManager.cs" />
     <Compile Include="AppManagement\Categories\ICategoriesInfo.cs" />

@@ -202,11 +202,14 @@ namespace ExpenseMonitorTests
       var startDate = DateTime.ParseExact( "01/01/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
       var endDate = DateTime.ParseExact( "01/01/2018", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
-      var combinedSpecifications = new AndSpecification<Entry>( new EntryDateSpecification( startDate, endDate ),
-                                                                new EntryCategorySpecification( "petrol" ) );
+      var specifications = new List<ISpecification<Entry>>()
+      {
+        new EntryDateSpecification( startDate, endDate ),
+        new EntryCategorySpecification( "petrol" )
+      };
 
       // Act
-      var total = manualEntryManager.GetTotal( combinedSpecifications );
+      var total = manualEntryManager.GetTotal( specifications );
 
       // Assert
       Assert.AreEqual( 2500, actual: total );
@@ -228,7 +231,7 @@ namespace ExpenseMonitorTests
       var date = DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
       // Act
-      double total = manualEntryManager.GetTotal( new EntryMonthSpecification( date ) );
+      double total = manualEntryManager.GetTotal( new List<ISpecification<Entry>>() { new EntryMonthSpecification( date ) } );
 
       // Assert
       Assert.AreEqual( 2000, actual: total );
@@ -254,11 +257,14 @@ namespace ExpenseMonitorTests
 
       var date = DateTime.ParseExact( "01/02/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture );
 
-      var combinedSpecifications = new AndSpecification<Entry>( new EntryMonthSpecification( date ),
-                                                                new EntryCategorySpecification( "petrol" ) );
+      var specifications = new List<ISpecification<Entry>>()
+      {
+        new EntryMonthSpecification( date ),
+        new EntryCategorySpecification( "petrol" )
+      };
 
       // Act
-      double total = manualEntryManager.GetTotal( combinedSpecifications );
+      double total = manualEntryManager.GetTotal( specifications );
 
       // Assert
       Assert.AreEqual( 2000, actual: total );
