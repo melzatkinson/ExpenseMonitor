@@ -171,7 +171,7 @@ namespace ExpenseMonitor
 
     private void RefreshProfilingInformation()
     {
-      double totalExpenditure = _manualEntriesInfo.GetTotal( new List<ISpecification<Entry>>() { new EntryMonthSpecification( endDatePicker.Value.Date ) } );
+      double totalExpenditure = _manualEntriesInfo.GetTotal( new EntryMonthSpecification( endDatePicker.Value.Date ) );
       double totalBudget = _categoriesInfo.GetTotalBudgetAmount();
 
       totalsOutput.Text = Convert.ToString( totalExpenditure, CultureInfo.InvariantCulture );
@@ -183,11 +183,8 @@ namespace ExpenseMonitor
 
       foreach( var category in _categoriesInfo.GetCategoryNames() )
       {
-        var specifications = new List<ISpecification<Entry>>()
-        {
-          new EntryMonthSpecification( endDatePicker.Value.Date ),
-          new EntryCategorySpecification( category )
-        };
+        var specifications = new AndSpecification<Entry>( new EntryMonthSpecification( endDatePicker.Value.Date ),
+                                                          new EntryCategorySpecification( category ) );
 
         var index = totalsTable.Rows.Add();
         totalsTable.Rows[ index ].Cells[ "totalsCategory" ].Value = category;

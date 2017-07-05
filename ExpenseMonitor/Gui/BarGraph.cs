@@ -82,11 +82,8 @@ public class BarGraph
 
     foreach( var entry in _categoriesInfo.GetCategories() )
     {
-      var specifications = new List<ISpecification<Entry>>()
-      {
-        new EntryDateSpecification( form.GetSelectedStartDate(), form.GetSelectedEndDate() ),
-        new EntryCategorySpecification( entry.Key )
-      };
+      var specifications = new AndSpecification<Entry>( new EntryDateSpecification( form.GetSelectedStartDate(), form.GetSelectedEndDate() ),
+                                                        new EntryCategorySpecification( entry.Key ) );
 
       var total = _manualEntriesInfo.GetTotal( specifications );
       _categoryTotals.Add( entry.Key, total );
