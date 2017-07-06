@@ -9,6 +9,7 @@ using ExpenseMonitor.AppManagement.EntryFiltering.Specifications;
 using ExpenseMonitor.AppManagement.ManualEntries;
 using ExpenseMonitor.AppManagement.RecurringEntries;
 using ExpenseMonitor.Gui;
+using ExpenseMonitor.Gui.BarGraph;
 
 namespace ExpenseMonitor
 {

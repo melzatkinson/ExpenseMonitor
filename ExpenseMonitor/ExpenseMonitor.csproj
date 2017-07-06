@@ -62,7 +62,10 @@
     <Compile Include="AppManagement\RecurringEntries\IRecurringEntriesInfo.cs" />
     <Compile Include="AppManagement\RecurringEntries\RecurringEntry.cs" />
     <Compile Include="AppManagement\RecurringEntries\RecurringEntryManager.cs" />
-    <Compile Include="Gui\BarGraph.cs" />
+    <Compile Include="Gui\BarGraph\Axes.cs" />
+    <Compile Include="Gui\BarGraph\BarGraph.cs" />
+    <Compile Include="Gui\BarGraph\BarGraphInfo.cs" />
+    <Compile Include="Gui\BarGraph\Bars.cs" />
     <Compile Include="Gui\ChangeCategoryBudgetForm.cs">
       <SubType>Form</SubType>
     </Compile>
