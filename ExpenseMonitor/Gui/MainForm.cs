@@ -196,6 +196,8 @@ namespace ExpenseMonitor
       functionOptionsInput.SelectionLength = 0;
       functionOptionsInput.DropDownStyle = ComboBoxStyle.DropDown;
       functionOptionsInput.Text = "Select option...";
+
+      Invalidate();
     }
 
     //-------------------------------------------------------------------------

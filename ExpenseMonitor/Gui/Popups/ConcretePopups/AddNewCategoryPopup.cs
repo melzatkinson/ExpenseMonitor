@@ -35,7 +35,7 @@ namespace ExpenseMonitor.Gui.Popups.ConcretePopups
 
     private void addNewCategory_Submit( object sender, KeyEventArgs e )
     {
-      if( e.KeyCode != Keys.Enter )
+      if( e.KeyCode != Keys.Enter || !popupGroupBox.Visible )
         return;
 
       if( !_infoCollection.CategoriesInfo.AddCategory( newCategoryInput.Text, double.Parse( budgetInput.Text, CultureInfo.InvariantCulture ) ) )
