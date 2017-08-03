@@ -8,9 +8,7 @@ namespace ExpenseMonitor
   static class Program
   {
     private static AppManager _appManager;
-    private static ManualEntriesManager _manualEntriesManager;
-    private static CategoriesManager _categoriesManager;
-    private static RecurringEntryManager _recurringEntryManager;
+    private static InfoCollection _infoCollection;
 
     /// <summary>
     /// The main entry point for the application.
@@ -18,16 +16,15 @@ namespace ExpenseMonitor
     [STAThread]
     static void Main()
     {
-      _manualEntriesManager = new ManualEntriesManager();
-      _categoriesManager = new CategoriesManager();
-      _recurringEntryManager = new RecurringEntryManager();
-      _appManager = new AppManager( _manualEntriesManager, _categoriesManager, _recurringEntryManager );
+      _infoCollection = new InfoCollection( new ManualEntriesManager(),
+                                            new CategoriesManager(),
+                                            new RecurringEntryManager() );
+
+      _appManager = new AppManager( _infoCollection );
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault( false );
-      Application.Run( new MainForm( _manualEntriesManager,
-                                     _categoriesManager,
-                                     _recurringEntryManager ) );
+      Application.Run( new MainForm( _infoCollection ) );
 
       _appManager.Shutdown();
     }

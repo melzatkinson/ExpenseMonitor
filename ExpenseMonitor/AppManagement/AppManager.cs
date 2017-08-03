@@ -1,27 +1,21 @@
 using System.IO;
 using System.Reflection;
-using ExpenseMonitor.AppManagement.ManualEntries;
-using ExpenseMonitor.AppManagement.RecurringEntries;
 
 namespace ExpenseMonitor.AppManagement
 {
   public class AppManager
   {
-    private readonly ICategoriesInfo _categoriesInfo;
-    private readonly IManualEntriesInfo _manualEntriesInfo;
-    private readonly IRecurringEntriesInfo _recurringEntriesInfo;
+    private readonly InfoCollection _infoCollection;
 
-    private readonly XmlStream _xmlStream = new XmlStream();
+    private readonly XmlStream _xmlStream = XmlStream.Instance;
 
     private string _xmlFilePath;
 
     //-------------------------------------------------------------------------
 
-    public AppManager( IManualEntriesInfo manualEntriesInfo, ICategoriesInfo categoriesInfo, IRecurringEntriesInfo recurringEntriesInfo )
+    public AppManager( InfoCollection infoCollection )
     {
-      _manualEntriesInfo = manualEntriesInfo;
-      _categoriesInfo = categoriesInfo;
-      _recurringEntriesInfo = recurringEntriesInfo;
+      _infoCollection = infoCollection;
 
       SetXmlFilePath();
 
@@ -29,9 +23,9 @@ namespace ExpenseMonitor.AppManagement
 
       _xmlStream.Load( _xmlFilePath );
 
-      _categoriesInfo.Initialise( _xmlStream.GetElementsWithName( "Category" ) );
-      _manualEntriesInfo.Initialise( _xmlStream.GetElementsWithName( "ManualEntry" ) );
-      _recurringEntriesInfo.Initialise( _xmlStream.GetElementsWithName( "RecurringEntry" ) );
+      _infoCollection.CategoriesInfo.Initialise( _xmlStream.GetElementsWithName( "Category" ) );
+      _infoCollection.ManualEntriesInfo.Initialise( _xmlStream.GetElementsWithName( "ManualEntry" ) );
+      _infoCollection.RecurringEntriesInfo.Initialise( _xmlStream.GetElementsWithName( "RecurringEntry" ) );
     }
 
     //-------------------------------------------------------------------------
@@ -50,7 +44,10 @@ namespace ExpenseMonitor.AppManagement
 
     public void Shutdown()
     {
-      _xmlStream.WriteToXml( _xmlFilePath, _categoriesInfo, _manualEntriesInfo, _recurringEntriesInfo );
+      _xmlStream.WriteToXml( _xmlFilePath,
+                             _infoCollection.CategoriesInfo,
+                             _infoCollection.ManualEntriesInfo,
+                             _infoCollection.RecurringEntriesInfo );
     }
 
     //-------------------------------------------------------------------------

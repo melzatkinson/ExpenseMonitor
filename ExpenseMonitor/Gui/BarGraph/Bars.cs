@@ -10,6 +10,8 @@ namespace ExpenseMonitor.Gui.BarGraph
     private readonly SolidBrush _greenBrush = new SolidBrush( Color.Green );
     private readonly SolidBrush _purpleBrush = new SolidBrush( Color.Purple );
 
+    private readonly Pen _blackPen = new Pen( Color.Black, (float)1.5 );
+
     private readonly ICategoriesInfo _categoriesInfo;
 
     private Point _startPoint;
@@ -44,8 +46,6 @@ namespace ExpenseMonitor.Gui.BarGraph
 
     private void DrawBars( double categoryTotal, double categoryBudget )
     {
-      _startPoint.X += ( int )_barWidth;
-
       DrawActualTotalBar( categoryTotal, categoryBudget );
 
       _startPoint.X += ( int )_barWidth;
@@ -90,6 +90,8 @@ namespace ExpenseMonitor.Gui.BarGraph
     {
       _graphics.FillRectangle( brush,
                                new Rectangle( point, new Size( width, height ) ) );
+
+      _graphics.DrawRectangle( _blackPen, new Rectangle( point, new Size( width, height ) ) );
     }
 
     //-------------------------------------------------------------------------

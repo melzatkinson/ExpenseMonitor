@@ -50,6 +50,7 @@
     <Compile Include="AppManagement\AppManager.cs" />
     <Compile Include="AppManagement\Categories\CategoriesManager.cs" />
     <Compile Include="AppManagement\Categories\ICategoriesInfo.cs" />
+    <Compile Include="AppManagement\InfoCollection.cs" />
     <Compile Include="AppManagement\ManualEntries\EnterFiltering\EntryFilter.cs" />
     <Compile Include="AppManagement\ManualEntries\EnterFiltering\Specifications\EntryCategorySpecification.cs" />
     <Compile Include="AppManagement\ManualEntries\EnterFiltering\Specifications\EntryMonthSpecification.cs" />
@@ -66,29 +67,42 @@
     <Compile Include="Gui\BarGraph\BarGraph.cs" />
     <Compile Include="Gui\BarGraph\BarGraphInfo.cs" />
     <Compile Include="Gui\BarGraph\Bars.cs" />
-    <Compile Include="Gui\ChangeCategoryBudgetForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Gui\ChangeCategoryBudgetForm.Designer.cs">
-      <DependentUpon>ChangeCategoryBudgetForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Gui\AddFixedEntryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Gui\AddFixedEntryForm.Designer.cs">
-      <DependentUpon>AddFixedEntryForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Gui\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Gui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gui\AddNewCategoryForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Gui\Popups\BasePopup.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Gui\AddNewCategoryForm.Designer.cs">
-      <DependentUpon>AddNewCategoryForm.cs</DependentUpon>
+    <Compile Include="Gui\Popups\BasePopup.Designer.cs">
+      <DependentUpon>BasePopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\Popups\ConcretePopups\AddManualEntryPopup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gui\Popups\ConcretePopups\AddManualEntryPopup.Designer.cs">
+      <DependentUpon>AddManualEntryPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\Popups\ConcretePopups\AddNewCategoryPopup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gui\Popups\ConcretePopups\AddNewCategoryPopup.Designer.cs">
+      <DependentUpon>AddNewCategoryPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\Popups\ConcretePopups\AddRecurringEntryPopup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gui\Popups\ConcretePopups\AddRecurringEntryPopup.Designer.cs">
+      <DependentUpon>AddRecurringEntryPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\Popups\PopupManager.cs" />
+    <Compile Include="Gui\Popups\ConcretePopups\UpdateExistingCategoryBudgetPopup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gui\Popups\ConcretePopups\UpdateExistingCategoryBudgetPopup.Designer.cs">
+      <DependentUpon>UpdateExistingCategoryBudgetPopup.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="AppManagement\XmlStream.cs" />
@@ -97,17 +111,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Gui\AddFixedEntryForm.resx">
-      <DependentUpon>AddFixedEntryForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Gui\ChangeCategoryBudgetForm.resx">
-      <DependentUpon>ChangeCategoryBudgetForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Gui\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Gui\AddNewCategoryForm.resx">
-      <DependentUpon>AddNewCategoryForm.cs</DependentUpon>
+    <EmbeddedResource Include="Gui\Popups\BasePopup.resx">
+      <DependentUpon>BasePopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\Popups\ConcretePopups\AddManualEntryPopup.resx">
+      <DependentUpon>AddManualEntryPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\Popups\ConcretePopups\AddNewCategoryPopup.resx">
+      <DependentUpon>AddNewCategoryPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\Popups\ConcretePopups\AddRecurringEntryPopup.resx">
+      <DependentUpon>AddRecurringEntryPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\Popups\ConcretePopups\UpdateExistingCategoryBudgetPopup.resx">
+      <DependentUpon>UpdateExistingCategoryBudgetPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -121,7 +141,9 @@
   <ItemGroup>
     <None Include="Images\MainBackground.jpg" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Images\close window.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

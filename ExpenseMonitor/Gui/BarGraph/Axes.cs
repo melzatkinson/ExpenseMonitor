@@ -7,6 +7,8 @@ namespace ExpenseMonitor.Gui.BarGraph
   public class Axes
   {
     private readonly Pen _blackPen = new Pen( Color.Black, 1 );
+    private readonly Pen _thickBlackPen = new Pen( Color.Black, 2 );
+
     private readonly SolidBrush _blackBrush = new SolidBrush( Color.Black );
 
     private static int _graphWidth;
@@ -78,13 +80,13 @@ namespace ExpenseMonitor.Gui.BarGraph
       foreach( var category in categoryTotals )
       {
         DrawLabel( category.Key,
-                   GetPosition( startPoint.X, startPoint.Y, ( int )barWidth + 10, 5 ),
+                   GetPosition( startPoint.X, startPoint.Y, ( int )barWidth - 5, 5 ),
                    new StringFormat( StringFormatFlags.DirectionVertical ) );
 
         DrawLabelLine( startPoint,
                        GetPosition( startPoint.X, startPoint.Y, 0, 20 ) );
 
-        startPoint.X += ( int )barWidth * 3;
+        startPoint.X += ( int )barWidth * 2;
       }
     }
 
@@ -99,7 +101,7 @@ namespace ExpenseMonitor.Gui.BarGraph
 
     private void DrawLabelLine( Point startPoint, Point endPoint )
     {
-      _graphics.DrawLine( _blackPen,
+      _graphics.DrawLine( _thickBlackPen,
                           startPoint,
                           endPoint );
     }
@@ -109,7 +111,7 @@ namespace ExpenseMonitor.Gui.BarGraph
     private void DrawLabel( string labelName, Point point, StringFormat drawFormat )
     {
       _graphics.DrawString( labelName,
-                            new Font( "Arial", 7.0f, FontStyle.Regular ),
+                            new Font( "Arial", 7.0f, FontStyle.Bold ),
                             _blackBrush,
                             point.X,
                             point.Y,

@@ -30,15 +30,7 @@ namespace ExpenseMonitor
     /// </summary>
     private void InitializeComponent()
     {
-      this.manualEntryGroup = new System.Windows.Forms.GroupBox();
-      this.AddNewEntry = new System.Windows.Forms.Button();
-      this.descriptionInput = new System.Windows.Forms.TextBox();
-      this.description = new System.Windows.Forms.Label();
-      this.amountInput = new System.Windows.Forms.TextBox();
-      this.amountLabel = new System.Windows.Forms.Label();
-      this.categoryLabel = new System.Windows.Forms.Label();
-      this.existingCategories = new System.Windows.Forms.ComboBox();
-      this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.viewRecordsGroupbox = new System.Windows.Forms.GroupBox();
       this.endDatePicker = new System.Windows.Forms.DateTimePicker();
       this.endDateLabel = new System.Windows.Forms.Label();
       this.startDateLabel = new System.Windows.Forms.Label();
@@ -48,8 +40,6 @@ namespace ExpenseMonitor
       this.EntryAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.EntryDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.EntryDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.fixedEntryGroup = new System.Windows.Forms.GroupBox();
-      this.addFixedEntryButton = new System.Windows.Forms.Button();
       this.removeSelectedEntry = new System.Windows.Forms.Button();
       this.profilingGroup = new System.Windows.Forms.GroupBox();
       this.monthSelectedOutput = new System.Windows.Forms.TextBox();
@@ -61,111 +51,30 @@ namespace ExpenseMonitor
       this.totalsAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.totalsOutput = new System.Windows.Forms.TextBox();
       this.totalLabel = new System.Windows.Forms.Label();
-      this.categoryManagerGroup = new System.Windows.Forms.GroupBox();
-      this.updateExistingCategoryBudget = new System.Windows.Forms.Button();
-      this.addNewCategory = new System.Windows.Forms.Button();
-      this.manualEntryGroup.SuspendLayout();
-      this.groupBox2.SuspendLayout();
+      this.functionOptions = new System.Windows.Forms.GroupBox();
+      this.functionOptionsInput = new System.Windows.Forms.ComboBox();
+      this.viewRecordsGroupbox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.recordsTable)).BeginInit();
-      this.fixedEntryGroup.SuspendLayout();
       this.profilingGroup.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.totalsTable)).BeginInit();
-      this.categoryManagerGroup.SuspendLayout();
+      this.functionOptions.SuspendLayout();
       this.SuspendLayout();
       // 
-      // manualEntryGroup
+      // viewRecordsGroupbox
       // 
-      this.manualEntryGroup.AutoSize = true;
-      this.manualEntryGroup.BackColor = System.Drawing.Color.Transparent;
-      this.manualEntryGroup.Controls.Add(this.AddNewEntry);
-      this.manualEntryGroup.Controls.Add(this.descriptionInput);
-      this.manualEntryGroup.Controls.Add(this.description);
-      this.manualEntryGroup.Controls.Add(this.amountInput);
-      this.manualEntryGroup.Controls.Add(this.amountLabel);
-      this.manualEntryGroup.Controls.Add(this.categoryLabel);
-      this.manualEntryGroup.Controls.Add(this.existingCategories);
-      this.manualEntryGroup.Location = new System.Drawing.Point(12, 12);
-      this.manualEntryGroup.Name = "manualEntryGroup";
-      this.manualEntryGroup.Size = new System.Drawing.Size(320, 180);
-      this.manualEntryGroup.TabIndex = 0;
-      this.manualEntryGroup.TabStop = false;
-      this.manualEntryGroup.Text = "Add Manual Entry";
-      // 
-      // AddNewEntry
-      // 
-      this.AddNewEntry.Location = new System.Drawing.Point(19, 138);
-      this.AddNewEntry.Name = "AddNewEntry";
-      this.AddNewEntry.Size = new System.Drawing.Size(75, 23);
-      this.AddNewEntry.TabIndex = 7;
-      this.AddNewEntry.Text = "Add";
-      this.AddNewEntry.UseVisualStyleBackColor = true;
-      this.AddNewEntry.Click += new System.EventHandler(this.AddNewEntry_Click);
-      // 
-      // descriptionInput
-      // 
-      this.descriptionInput.Location = new System.Drawing.Point(89, 93);
-      this.descriptionInput.Name = "descriptionInput";
-      this.descriptionInput.Size = new System.Drawing.Size(187, 20);
-      this.descriptionInput.TabIndex = 5;
-      // 
-      // description
-      // 
-      this.description.AutoSize = true;
-      this.description.Location = new System.Drawing.Point(16, 96);
-      this.description.Name = "description";
-      this.description.Size = new System.Drawing.Size(60, 13);
-      this.description.TabIndex = 4;
-      this.description.Text = "Description";
-      // 
-      // amountInput
-      // 
-      this.amountInput.Location = new System.Drawing.Point(89, 59);
-      this.amountInput.Name = "amountInput";
-      this.amountInput.Size = new System.Drawing.Size(187, 20);
-      this.amountInput.TabIndex = 3;
-      // 
-      // amountLabel
-      // 
-      this.amountLabel.AutoSize = true;
-      this.amountLabel.Location = new System.Drawing.Point(16, 62);
-      this.amountLabel.Name = "amountLabel";
-      this.amountLabel.Size = new System.Drawing.Size(43, 13);
-      this.amountLabel.TabIndex = 2;
-      this.amountLabel.Text = "Amount";
-      // 
-      // categoryLabel
-      // 
-      this.categoryLabel.AutoSize = true;
-      this.categoryLabel.Location = new System.Drawing.Point(16, 27);
-      this.categoryLabel.Name = "categoryLabel";
-      this.categoryLabel.Size = new System.Drawing.Size(49, 13);
-      this.categoryLabel.TabIndex = 1;
-      this.categoryLabel.Text = "Category";
-      // 
-      // existingCategories
-      // 
-      this.existingCategories.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.existingCategories.FormattingEnabled = true;
-      this.existingCategories.Location = new System.Drawing.Point(89, 24);
-      this.existingCategories.Name = "existingCategories";
-      this.existingCategories.Size = new System.Drawing.Size(187, 21);
-      this.existingCategories.TabIndex = 0;
-      // 
-      // groupBox2
-      // 
-      this.groupBox2.AutoSize = true;
-      this.groupBox2.BackColor = System.Drawing.Color.Transparent;
-      this.groupBox2.Controls.Add(this.endDatePicker);
-      this.groupBox2.Controls.Add(this.endDateLabel);
-      this.groupBox2.Controls.Add(this.startDateLabel);
-      this.groupBox2.Controls.Add(this.startDatePicker);
-      this.groupBox2.Controls.Add(this.recordsTable);
-      this.groupBox2.Location = new System.Drawing.Point(12, 198);
-      this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(614, 291);
-      this.groupBox2.TabIndex = 1;
-      this.groupBox2.TabStop = false;
-      this.groupBox2.Text = "View";
+      this.viewRecordsGroupbox.AutoSize = true;
+      this.viewRecordsGroupbox.BackColor = System.Drawing.Color.Transparent;
+      this.viewRecordsGroupbox.Controls.Add(this.endDatePicker);
+      this.viewRecordsGroupbox.Controls.Add(this.endDateLabel);
+      this.viewRecordsGroupbox.Controls.Add(this.startDateLabel);
+      this.viewRecordsGroupbox.Controls.Add(this.startDatePicker);
+      this.viewRecordsGroupbox.Controls.Add(this.recordsTable);
+      this.viewRecordsGroupbox.Location = new System.Drawing.Point(12, 92);
+      this.viewRecordsGroupbox.Name = "viewRecordsGroupbox";
+      this.viewRecordsGroupbox.Size = new System.Drawing.Size(620, 291);
+      this.viewRecordsGroupbox.TabIndex = 1;
+      this.viewRecordsGroupbox.TabStop = false;
+      this.viewRecordsGroupbox.Text = "View";
       // 
       // endDatePicker
       // 
@@ -235,30 +144,9 @@ namespace ExpenseMonitor
       this.EntryDescription.HeaderText = "Description";
       this.EntryDescription.Name = "EntryDescription";
       // 
-      // fixedEntryGroup
-      // 
-      this.fixedEntryGroup.BackColor = System.Drawing.Color.Transparent;
-      this.fixedEntryGroup.Controls.Add(this.addFixedEntryButton);
-      this.fixedEntryGroup.Location = new System.Drawing.Point(338, 12);
-      this.fixedEntryGroup.Name = "fixedEntryGroup";
-      this.fixedEntryGroup.Size = new System.Drawing.Size(288, 92);
-      this.fixedEntryGroup.TabIndex = 2;
-      this.fixedEntryGroup.TabStop = false;
-      this.fixedEntryGroup.Text = "Add Fixed Entry";
-      // 
-      // addFixedEntryButton
-      // 
-      this.addFixedEntryButton.Location = new System.Drawing.Point(19, 37);
-      this.addFixedEntryButton.Name = "addFixedEntryButton";
-      this.addFixedEntryButton.Size = new System.Drawing.Size(75, 23);
-      this.addFixedEntryButton.TabIndex = 0;
-      this.addFixedEntryButton.Text = "Add";
-      this.addFixedEntryButton.UseVisualStyleBackColor = true;
-      this.addFixedEntryButton.Click += new System.EventHandler(this.addFixedEntryButton_Click);
-      // 
       // removeSelectedEntry
       // 
-      this.removeSelectedEntry.Location = new System.Drawing.Point(12, 495);
+      this.removeSelectedEntry.Location = new System.Drawing.Point(12, 390);
       this.removeSelectedEntry.Name = "removeSelectedEntry";
       this.removeSelectedEntry.Size = new System.Drawing.Size(130, 23);
       this.removeSelectedEntry.TabIndex = 3;
@@ -276,7 +164,7 @@ namespace ExpenseMonitor
       this.profilingGroup.Controls.Add(this.totalsTable);
       this.profilingGroup.Controls.Add(this.totalsOutput);
       this.profilingGroup.Controls.Add(this.totalLabel);
-      this.profilingGroup.Location = new System.Drawing.Point(12, 524);
+      this.profilingGroup.Location = new System.Drawing.Point(12, 419);
       this.profilingGroup.Name = "profilingGroup";
       this.profilingGroup.Size = new System.Drawing.Size(614, 253);
       this.profilingGroup.TabIndex = 4;
@@ -361,36 +249,30 @@ namespace ExpenseMonitor
       this.totalLabel.TabIndex = 0;
       this.totalLabel.Text = "Total:";
       // 
-      // categoryManagerGroup
+      // functionOptions
       // 
-      this.categoryManagerGroup.Controls.Add(this.updateExistingCategoryBudget);
-      this.categoryManagerGroup.Controls.Add(this.addNewCategory);
-      this.categoryManagerGroup.Location = new System.Drawing.Point(338, 108);
-      this.categoryManagerGroup.Name = "categoryManagerGroup";
-      this.categoryManagerGroup.Size = new System.Drawing.Size(288, 84);
-      this.categoryManagerGroup.TabIndex = 9;
-      this.categoryManagerGroup.TabStop = false;
-      this.categoryManagerGroup.Text = "Category Manager";
+      this.functionOptions.BackColor = System.Drawing.Color.Transparent;
+      this.functionOptions.Controls.Add(this.functionOptionsInput);
+      this.functionOptions.Location = new System.Drawing.Point(12, 12);
+      this.functionOptions.Name = "functionOptions";
+      this.functionOptions.Size = new System.Drawing.Size(614, 74);
+      this.functionOptions.TabIndex = 10;
+      this.functionOptions.TabStop = false;
+      this.functionOptions.Text = "Add/Update";
       // 
-      // updateExistingCategoryBudget
+      // functionOptionsInput
       // 
-      this.updateExistingCategoryBudget.Location = new System.Drawing.Point(142, 19);
-      this.updateExistingCategoryBudget.Name = "updateExistingCategoryBudget";
-      this.updateExistingCategoryBudget.Size = new System.Drawing.Size(130, 46);
-      this.updateExistingCategoryBudget.TabIndex = 1;
-      this.updateExistingCategoryBudget.Text = "Update Existing Category Budget";
-      this.updateExistingCategoryBudget.UseVisualStyleBackColor = true;
-      this.updateExistingCategoryBudget.Click += new System.EventHandler(this.updateExistingBudget_Click);
-      // 
-      // addNewCategory
-      // 
-      this.addNewCategory.Location = new System.Drawing.Point(20, 19);
-      this.addNewCategory.Name = "addNewCategory";
-      this.addNewCategory.Size = new System.Drawing.Size(116, 46);
-      this.addNewCategory.TabIndex = 0;
-      this.addNewCategory.Text = "Add New Category";
-      this.addNewCategory.UseVisualStyleBackColor = true;
-      this.addNewCategory.Click += new System.EventHandler(this.addNewBudget_Click);
+      this.functionOptionsInput.FormattingEnabled = true;
+      this.functionOptionsInput.Items.AddRange(new object[] {
+            "Add Manual Entry",
+            "Add Recurring Entry",
+            "Add New Category",
+            "Update Existing Category Budget"});
+      this.functionOptionsInput.Location = new System.Drawing.Point(18, 33);
+      this.functionOptionsInput.Name = "functionOptionsInput";
+      this.functionOptionsInput.Size = new System.Drawing.Size(284, 21);
+      this.functionOptionsInput.TabIndex = 0;
+      this.functionOptionsInput.SelectedIndexChanged += new System.EventHandler(this.functionOptionsInput_SelectedIndexChanged);
       // 
       // MainForm
       // 
@@ -398,41 +280,27 @@ namespace ExpenseMonitor
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackgroundImage = global::ExpenseMonitor.Properties.Resources.MainBackground;
       this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-      this.ClientSize = new System.Drawing.Size(1258, 789);
-      this.Controls.Add(this.categoryManagerGroup);
+      this.ClientSize = new System.Drawing.Size(1194, 686);
+      this.Controls.Add(this.functionOptions);
       this.Controls.Add(this.profilingGroup);
       this.Controls.Add(this.removeSelectedEntry);
-      this.Controls.Add(this.fixedEntryGroup);
-      this.Controls.Add(this.groupBox2);
-      this.Controls.Add(this.manualEntryGroup);
+      this.Controls.Add(this.viewRecordsGroupbox);
       this.Name = "MainForm";
       this.Text = "Expense Monitor";
-      this.manualEntryGroup.ResumeLayout(false);
-      this.manualEntryGroup.PerformLayout();
-      this.groupBox2.ResumeLayout(false);
-      this.groupBox2.PerformLayout();
+      this.viewRecordsGroupbox.ResumeLayout(false);
+      this.viewRecordsGroupbox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.recordsTable)).EndInit();
-      this.fixedEntryGroup.ResumeLayout(false);
       this.profilingGroup.ResumeLayout(false);
       this.profilingGroup.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.totalsTable)).EndInit();
-      this.categoryManagerGroup.ResumeLayout(false);
+      this.functionOptions.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
     }
 
     #endregion
-
-    private System.Windows.Forms.GroupBox manualEntryGroup;
-    private System.Windows.Forms.TextBox descriptionInput;
-    private System.Windows.Forms.Label description;
-    private System.Windows.Forms.TextBox amountInput;
-    private System.Windows.Forms.Label amountLabel;
-    private System.Windows.Forms.Label categoryLabel;
-    private System.Windows.Forms.ComboBox existingCategories;
-    private Button AddNewEntry;
-    private GroupBox groupBox2;
+    private GroupBox viewRecordsGroupbox;
     private DataGridView recordsTable;
     private DataGridViewTextBoxColumn EntryCategory;
     private DataGridViewTextBoxColumn EntryAmount;
@@ -442,8 +310,6 @@ namespace ExpenseMonitor
     private DateTimePicker startDatePicker;
     private Label endDateLabel;
     private DateTimePicker endDatePicker;
-    private GroupBox fixedEntryGroup;
-    private Button addFixedEntryButton;
     private Button removeSelectedEntry;
     private GroupBox profilingGroup;
     private Label totalLabel;
@@ -452,12 +318,11 @@ namespace ExpenseMonitor
     private DataGridViewTextBoxColumn totalsCategory;
     private DataGridViewTextBoxColumn totalsAmount;
     private TextBox budgetTotalOutput;
-    private GroupBox categoryManagerGroup;
-    private Button updateExistingCategoryBudget;
-    private Button addNewCategory;
     private Label budgetLabel;
     private Label monthSelectedToProfileLabel;
     private TextBox monthSelectedOutput;
+    private GroupBox functionOptions;
+    private ComboBox functionOptionsInput;
   }
 }
 

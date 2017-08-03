@@ -10,7 +10,16 @@ namespace ExpenseMonitor
 {
   public class XmlStream
   {
+    private static readonly Lazy<XmlStream> instance = new Lazy<XmlStream>( () => new XmlStream() );
+    public static XmlStream Instance => instance.Value;
+
     private XmlDocument _xmlDoc;
+
+    //-------------------------------------------------------------------------
+
+    private XmlStream()
+    {
+    }
 
     //-------------------------------------------------------------------------
 
