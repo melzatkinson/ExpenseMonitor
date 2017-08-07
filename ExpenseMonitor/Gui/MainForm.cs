@@ -11,6 +11,7 @@ using ExpenseMonitor.AppManagement.ManualEntries;
 using ExpenseMonitor.AppManagement.RecurringEntries;
 using ExpenseMonitor.Gui;
 using ExpenseMonitor.Gui.BarGraph;
+using ExpenseMonitor.Gui.Popups;
 
 namespace ExpenseMonitor
 {
@@ -21,7 +22,8 @@ namespace ExpenseMonitor
     private readonly EntryFilter _entryFilter = new EntryFilter();
 
     private readonly InfoCollection _infoCollection;
-    private readonly PopupManager _popupManager;
+
+    private List<BasePopup> _popups;
 
     //-------------------------------------------------------------------------
 
@@ -29,7 +31,7 @@ namespace ExpenseMonitor
     {
       _infoCollection = infoCollection;
 
-      _popupManager = new PopupManager( this, _infoCollection );
+      _popups = PopupFactory.CreatePopups( this, infoCollection ).ToList();
 
       InitialiseForms();
       SetupEvents();
@@ -180,7 +182,8 @@ namespace ExpenseMonitor
       profilingGroup.Visible = false;
       removeSelectedEntry.Visible = false;
 
-      _popupManager.CreatePopup( functionOptionsInput.SelectedItem.ToString() );
+      PopupHelper.HideAllPopups( _popups );
+      PopupHelper.GetPopupWithName( _popups, name: functionOptionsInput.SelectedItem.ToString() ).ShowPopup();
 
       functionOptionsInput.DropDownStyle = ComboBoxStyle.DropDownList;
     }
