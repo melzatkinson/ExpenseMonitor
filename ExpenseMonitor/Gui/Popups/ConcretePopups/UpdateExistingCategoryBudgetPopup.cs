@@ -64,7 +64,8 @@ namespace ExpenseMonitor.Gui.Popups.ConcretePopups
         categoryInput.Items.Add( category.Key );
       }
 
-      categoryInput.SelectedIndex = 0;
+      if( categoryInput.Items.Count > 0 )
+        categoryInput.SelectedIndex = 0;
     }
 
     //-------------------------------------------------------------------------
